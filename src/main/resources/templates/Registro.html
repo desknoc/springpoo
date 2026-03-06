@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<center><h1>Registrate</h1>
+    <form action="/guardarUsuario" method="post">
+        <label for="primer_nombre">Primer Nombre:</label>
+        <input type="text" id="primer_nombre" name="primer_nombre" placeholder="Ingresa tu primer nombre" required><br><br>
+
+        <label for="segundo_nombre">Segundo Nombre:</label>
+        <input type="text" id="segundo_nombre" name="segundo_nombre" placeholder="Ingresa tu segundo nombre"><br><br>
+
+        <label for="primer_apellido">Primer Apellido:</label>
+        <input type="text" id="primer_apellido" name="primer_apellido" placeholder="Ingresa tu primer apellido" required><br><br>
+
+        <label for="segundo_apellido">Segundo Apellido:</label>
+        <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="Ingresa tu segundo apellido"><br><br>
+
+        <label for="tipo_documento">Tipo de Documento:</label>
+        <select id="tipo_documento" name="tipo_documento" required>
+            <option value="">Selecciona un tipo de documento</option>
+            <option value="CC">Cédula de Ciudadanía</option>
+            <option value="TI">Tarjeta de Identidad</option>
+            <option value="CE">Cédula de Extranjería</option>
+        </select><br><br>
+
+        <label for="numero_documento">Número de Documento:</label>
+        <input type="number" id="numero_documento" name="numero_documento" placeholder="Ingresa tu número de documento" required><br><br>
+
+        <label for="celular">Celular:</label>
+        <input type="tel" id="celular" name="celular" placeholder="Ingresa tu número de celular" required><br><br>
+
+        <label for="ficha">Ficha:</label>
+        <input type="number" id="ficha" name="ficha" placeholder="Ingresa tu número de ficha" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Ingresa tu email" required><br><br>
+
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required><br><br>
+
+        <input type="submit" value="Registrarse">
+    </form>
+</center>
+</body>
+</html>
