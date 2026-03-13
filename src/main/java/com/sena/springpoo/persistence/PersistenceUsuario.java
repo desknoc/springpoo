@@ -4,7 +4,23 @@ public class PersistenceUsuario {
 
     public boolean save (){
 
-        String sql = "INSERT INTO usuario (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, tipo_documento, documento, celular, correo_electronico, contrasena, rol, fecha_registro, ultima_actualizacion) VALUES (?,?,?,?,?,?,?,?,?, ADMIN, NOW(), NOW())";
+        try {
+
+            Connection conn = Conexion.getConnection();
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, u.getPrimerNombre());
+            ps.setString(2, u.getSegundoNombre());
+            ps.setString(3, u.getPrimerApellido());
+            ps.setString(4, u.getSegundoApellido());
+            ps.setString(5, u.getTipoDocumento());
+            ps.setInt(6, u.getDocumento());
+            ps.setInt(7, u.getCelular());
+            ps.setString(8, u.getCorreo());
+            ps.setString(9, u.getContrasena());
+
+            ps.executeUpdate();
 
         return true;
     }
