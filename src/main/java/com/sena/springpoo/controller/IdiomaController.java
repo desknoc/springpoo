@@ -24,4 +24,11 @@ public class IdiomaController {
 
     }
 
+    @GetMapping("/usuario/{id}")
+    public String buscarUsuario(@PathVariable int id){
+
+        return "Usuario encontrado con ID: " + id;
+
+    }
+
 }
