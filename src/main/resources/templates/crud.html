@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>CRUD Usuarios</title>
+</head>
+
+<body>
+
+<h1>CRUD de Usuarios</h1>
+<h2>Buscar Usuario</h2>
+
+<form action="/crud/buscar" method="get">
+
+    <input type="number" name="id" placeholder="ID usuario">
+
+    <button type="submit">Buscar</button>
+
+</form>
+
+<div th:if="${usuarioEncontrado != null}">
+
+    <h3>Usuario encontrado</h3>
+
+    <p>ID: <span th:text="${usuarioEncontrado.idUsuario}"></span></p>
+    <p>Nombre: <span th:text="${usuarioEncontrado.primerNombre}"></span></p>
+    <p>Apellido: <span th:text="${usuarioEncontrado.primerApellido}"></span></p>
+
+</div>
+
+<h2>Crear Usuario</h2>
+
+<form action="/crud/crear" method="post">
+
+    <input type="text" name="primerNombre" placeholder="Primer Nombre">
+
+    <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
+
+    <input type="text" name="primerApellido" placeholder="Primer Apellido">
+
+    <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
+
+    <input type="text" name="tipoDocumento" placeholder="Tipo Documento">
+
+    <input type="number" name="documento" placeholder="Documento">
+
+    <input type="number" name="celular" placeholder="Celular">
+
+    <input type="email" name="correo" placeholder="Correo">
+
+    <input type="password" name="contrasena" placeholder="Contraseña">
+
+    <button type="submit">Crear</button>
+
+</form>
+
+<hr>
+
+<h2>Lista de Usuarios</h2>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Documento</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+    </tr>
+
+    <tr th:each="u : ${usuarios}">
+
+        <td th:text="${u.idUsuario}"></td>
+        <td th:text="${u.primerNombre}"></td>
+        <td th:text="${u.primerApellido}"></td>
+        <td th:text="${u.documento}"></td>
+        <td th:text="${u.correo}"></td>
+
+        <td>
+
+            <a th:href="@{/crud/eliminar/{id}(id=${u.idUsuario})}">
+                Eliminar
+            </a>
+
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+
+</html>

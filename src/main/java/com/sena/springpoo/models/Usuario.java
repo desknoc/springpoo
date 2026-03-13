@@ -8,12 +8,12 @@ public class Usuario {
     private String primerApellido;
     private String segundoApellido;
     private String tipoDocumento;
-    private int documento;
-    private int celular;
+    private long documento;
+    private long celular;
     private String correo;
     private String contrasena;
 
-    public Usuario(int celular, String contrasena, String correo, int documento, long idUsuario, String primerApellido, String primerNombre, String segundoApellido, String segundoNombre, String tipoDocumento) {
+    public Usuario(long celular, String contrasena, String correo, long documento, long idUsuario, String primerApellido, String primerNombre, String segundoApellido, String segundoNombre, String tipoDocumento) {
         this.celular = celular;
         this.contrasena = contrasena;
         this.correo = correo;
@@ -29,11 +29,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public int getCelular() {
+    public long getCelular() {
         return celular;
     }
 
-    public void setCelular(int celular) {
+    public void setCelular(long celular) {
         this.celular = celular;
     }
 
@@ -53,11 +53,11 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public int getDocumento() {
+    public long getDocumento() {
         return documento;
     }
 
-    public void setDocumento(int documento) {
+    public void setDocumento(long documento) {
         this.documento = documento;
     }
 

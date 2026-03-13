@@ -5,6 +5,9 @@ import com.sena.springpoo.models.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.ResultSet;
 
 public class PersistenceUsuario {
 
@@ -23,8 +26,8 @@ public class PersistenceUsuario {
             ps.setString(3, usuario.getPrimerApellido());
             ps.setString(4, usuario.getSegundoApellido());
             ps.setString(5, usuario.getTipoDocumento());
-            ps.setInt(6, usuario.getDocumento());
-            ps.setInt(7, usuario.getCelular());
+            ps.setLong(6, usuario.getDocumento());
+            ps.setLong(7, usuario.getCelular());
             ps.setString(8, usuario.getCorreo());
             ps.setString(9, usuario.getContrasena());
 
@@ -39,29 +42,37 @@ public class PersistenceUsuario {
         return false;
     }
 
-    public static boolean delete(long idUsuario){
+    public static List<Usuario> getUsuarios(){
 
-        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
+        List<Usuario> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM usuario";
 
         try {
 
             Connection conn = Conexion.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
-            ps.setLong(1, idUsuario);
+            while(rs.next()){
 
-            ps.executeUpdate();
+                Usuario u = new Usuario();
 
-            ps.close();
-            conn.close();
+                u.setIdUsuario(rs.getLong("id_usuario"));
+                u.setPrimerNombre(rs.getString("primer_nombre"));
+                u.setPrimerApellido(rs.getString("primer_apellido"));
+                u.setDocumento(rs.getLong("documento"));
+                u.setCorreo(rs.getString("correo_electronico"));
 
-            return true;
+                lista.add(u);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return lista;
+
     }
 
     public static Usuario getUsuarioById(long id){

@@ -1,10 +1,15 @@
 package com.sena.springpoo.controller;
 
 
+import com.sena.springpoo.models.Usuario;
+import com.sena.springpoo.persistence.PersistenceUsuario;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import java.util.List;
+
 
 @Controller
 public class ControllerAdmin {
@@ -21,8 +26,8 @@ public class ControllerAdmin {
             @RequestParam String primerApellido,
             @RequestParam String segundoApellido,
             @RequestParam String tipoDocumento,
-            @RequestParam String documento,
-            @RequestParam String celular,
+            @RequestParam long documento,
+            @RequestParam long celular,
             @RequestParam String correo,
             @RequestParam String contrasena
     ){
@@ -38,15 +43,18 @@ public class ControllerAdmin {
         usuario.setCorreo(correo);
         usuario.setContrasena(contrasena);
 
+        PersistenceUsuario.save(usuario);
+
         return "Registro";
     }
 
     @GetMapping("/eliminarUsuario")
     public String eliminarUsuario(@RequestParam long id){
 
-        PersistenceUsuario.delete(idUsuario);
+        PersistenceUsuario.delete(id);
 
-        return "Registro";
+        return "redirect:/usuarios";
+
     }
 
 
@@ -57,7 +65,7 @@ public class ControllerAdmin {
 
         model.addAttribute("usuarios", usuarios);
 
-        return "Usuarios";
+        return "usuarios";
     }
 
 }
