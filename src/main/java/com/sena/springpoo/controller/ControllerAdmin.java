@@ -50,4 +50,14 @@ public class ControllerAdmin {
     }
 
 
+    @GetMapping("/usuarios")
+    public String verUsuarios(Model model){
+
+        List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
+
+        model.addAttribute("usuarios", usuarios);
+
+        return "Usuarios";
+    }
+
 }
