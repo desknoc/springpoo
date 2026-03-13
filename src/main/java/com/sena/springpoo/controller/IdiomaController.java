@@ -17,4 +17,11 @@ public class IdiomaController {
 
     }
 
+    @GetMapping("/mensaje")
+    public String mensaje(@RequestParam String nombre){
+
+        return "Hola " + nombre;
+
+    }
+
 }
