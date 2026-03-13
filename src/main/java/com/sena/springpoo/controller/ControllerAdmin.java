@@ -41,8 +41,8 @@ public class ControllerAdmin {
         return "Registro";
     }
 
-    @PostMapping("/eliminarUsuario")
-    public String eliminarUsuario(@RequestParam long idUsuario){
+    @GetMapping("/eliminarUsuario")
+    public String eliminarUsuario(@RequestParam long id){
 
         PersistenceUsuario.delete(idUsuario);
 
