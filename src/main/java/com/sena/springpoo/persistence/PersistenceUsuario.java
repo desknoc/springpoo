@@ -64,4 +64,28 @@ public class PersistenceUsuario {
         return false;
     }
 
+    public static boolean delete(long id){
+
+        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
+
+        try {
+
+            Connection conn = Conexion.getConnection();
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setLong(1, id);
+
+            ps.executeUpdate();
+
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
 }
