@@ -1,8 +1,16 @@
 package com.sena.springpoo.persistence;
 
+import com.sena.springpoo.models.Usuario;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class PersistenceUsuario {
 
-    public boolean save (){
+    public static boolean save(Usuario usuario){
+
+        String sql = "INSERT INTO usuario (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, tipo_documento, documento, celular, correo_electronico, contrasena, rol, fecha_registro, ultima_actualizacion) VALUES (?,?,?,?,?,?,?,?,?, 'ADMIN', NOW(), NOW())";
 
         try {
 
@@ -22,7 +30,38 @@ public class PersistenceUsuario {
 
             ps.executeUpdate();
 
-        return true;
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean delete(long idUsuario){
+
+        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
+
+        try {
+
+            Connection conn = Conexion.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setLong(1, idUsuario);
+
+            ps.executeUpdate();
+
+            ps.close();
+            conn.close();
+
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }
