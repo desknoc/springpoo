@@ -64,6 +64,66 @@ public class PersistenceUsuario {
         return false;
     }
 
+    public static Usuario getUsuarioById(long id){
+
+        String sql = "SELECT * FROM usuario WHERE id_usuario = ?";
+
+        try{
+
+            Connection conn = Conexion.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setLong(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+
+                Usuario u = new Usuario();
+
+                u.setIdUsuario(rs.getLong("id_usuario"));
+                u.setPrimerNombre(rs.getString("primer_nombre"));
+                u.setPrimerApellido(rs.getString("primer_apellido"));
+                u.setDocumento(rs.getLong("documento"));
+                u.setCorreo(rs.getString("correo_electronico"));
+
+                return u;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static boolean update(Usuario usuario){
+
+        String sql = "UPDATE usuario SET primer_nombre=?, primer_apellido=?, documento=?, correo_electronico=?, ultima_actualizacion=NOW() WHERE id_usuario=?";
+
+        try{
+
+            Connection conn = Conexion.getConnection();
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, usuario.getPrimerNombre());
+            ps.setString(2, usuario.getPrimerApellido());
+            ps.setLong(3, usuario.getDocumento());
+            ps.setString(4, usuario.getCorreo());
+            ps.setLong(5, usuario.getIdUsuario());
+
+            ps.executeUpdate();
+
+            return true;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static boolean delete(long id){
 
         String sql = "DELETE FROM usuario WHERE id_usuario = ?";
