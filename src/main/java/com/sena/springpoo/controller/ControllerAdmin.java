@@ -26,15 +26,18 @@ public class ControllerAdmin {
             @RequestParam String correo,
             @RequestParam String contrasena
     ){
-        System.out.println(primerNombre);
-        System.out.println(segundoNombre);
-        System.out.println(primerApellido);
-        System.out.println(segundoApellido);
-        System.out.println(tipoDocumento);
-        System.out.println(documento);
-        System.out.println(celular);
-        System.out.println(correo);
-        System.out.println(contrasena);
+        Usuario usuario = new Usuario();
+
+        usuario.setPrimerNombre(primerNombre);
+        usuario.setSegundoNombre(segundoNombre);
+        usuario.setPrimerApellido(primerApellido);
+        usuario.setSegundoApellido(segundoApellido);
+        usuario.setTipoDocumento(tipoDocumento);
+        usuario.setDocumento(documento);
+        usuario.setCelular(celular);
+        usuario.setCorreo(correo);
+        usuario.setContrasena(contrasena);
+
         return "Registro";
     }
 
