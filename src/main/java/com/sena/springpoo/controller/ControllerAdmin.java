@@ -64,8 +64,13 @@ public class ControllerAdmin {
         }
     }
 
-    @GetMapping("/eliminarUsuario")
-    public String eliminarUsuario(@RequestParam long id){
+    
+    @DeleteMapping("/eliminarUsuario/{id}")
+    @ResponseBody
+    public ResponseEntity<String> eliminarUsuario(
+            @PathVariable long id,
+            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
+    ){
 
         PersistenceUsuario.delete(id);
 
