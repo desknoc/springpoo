@@ -56,7 +56,12 @@ public class ControllerAdmin {
             mensaje = guardado ? "User saved successfully" : "Error saving user";
         }
 
-        return "Registro";
+        // 📡 CÓDIGOS HTTP
+        if(guardado){
+            return new ResponseEntity<>(mensaje, HttpStatus.CREATED); // 201
+        } else {
+            return new ResponseEntity<>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
     }
 
     @GetMapping("/eliminarUsuario")
