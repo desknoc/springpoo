@@ -76,7 +76,11 @@ public class ControllerAdmin {
 
         return "redirect:/usuarios";
 
-    }
+        if(idioma.contains("es")){
+            mensaje = eliminado ? "Usuario eliminado" : "Usuario no encontrado";
+        } else {
+            mensaje = eliminado ? "User deleted" : "User not found";
+        }
 
 
     @GetMapping("/usuarios")
