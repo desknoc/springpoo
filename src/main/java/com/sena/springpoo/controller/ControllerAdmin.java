@@ -30,7 +30,8 @@ public class ControllerAdmin {
             @RequestParam long documento,
             @RequestParam long celular,
             @RequestParam String correo,
-            @RequestParam String contrasena
+            @RequestParam String contrasena,
+            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ){
         Usuario usuario = new Usuario();
 
