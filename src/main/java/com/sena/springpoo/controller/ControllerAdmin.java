@@ -94,9 +94,8 @@ public class ControllerAdmin {
 
         List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
 
-        model.addAttribute("usuarios", usuarios);
-
-        return "usuarios";
-    }
+        if(usuarios.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+        }
 
 }
