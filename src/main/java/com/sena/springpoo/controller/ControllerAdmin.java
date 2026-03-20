@@ -19,6 +19,7 @@ public class ControllerAdmin {
         return "Registro";
     }
 
+    // ✅ CREAR USUARIO CON RESPUESTA HTTP + HEADER
     @PostMapping("/guardarUsuario")
     public String registrarUsuario(
             @RequestParam String primerNombre,
