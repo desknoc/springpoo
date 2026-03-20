@@ -1,15 +1,13 @@
 package com.sena.springpoo.controller;
 
-
 import com.sena.springpoo.models.Usuario;
 import com.sena.springpoo.persistence.PersistenceUsuario;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.Model;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @Controller
 public class ControllerAdmin {
@@ -21,7 +19,8 @@ public class ControllerAdmin {
 
     // ✅ CREAR USUARIO CON RESPUESTA HTTP + HEADER
     @PostMapping("/guardarUsuario")
-    public String registrarUsuario(
+    @ResponseBody
+    public ResponseEntity<String> registrarUsuario(
             @RequestParam String primerNombre,
             @RequestParam String segundoNombre,
             @RequestParam String primerApellido,
@@ -33,6 +32,7 @@ public class ControllerAdmin {
             @RequestParam String contrasena,
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ){
+
         Usuario usuario = new Usuario();
 
         usuario.setPrimerNombre(primerNombre);
@@ -64,7 +64,7 @@ public class ControllerAdmin {
         }
     }
 
-    
+
     @DeleteMapping("/eliminarUsuario/{id}")
     @ResponseBody
     public ResponseEntity<String> eliminarUsuario(
@@ -72,9 +72,9 @@ public class ControllerAdmin {
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ){
 
-        PersistenceUsuario.delete(id);
+        boolean eliminado = PersistenceUsuario.delete(id);
 
-        return "redirect:/usuarios";
+        String mensaje;
 
         if(idioma.contains("es")){
             mensaje = eliminado ? "Usuario eliminado" : "Usuario no encontrado";
@@ -89,8 +89,10 @@ public class ControllerAdmin {
         }
     }
 
-    @GetMapping("/usuarios")
-    public String verUsuarios(Model model){
+
+    @GetMapping("/usuariosAPI")
+    @ResponseBody
+    public ResponseEntity<List<Usuario>> verUsuarios(){
 
         List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
 
@@ -98,4 +100,6 @@ public class ControllerAdmin {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
         }
 
+        return new ResponseEntity<>(usuarios, HttpStatus.OK); // 200
+    }
 }

@@ -1,50 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registro de Usuarios</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff; /* Fondo blanco para el background */
+            color: #333;
+            text-align: center;
+            padding-top: 50px;
+            margin: 0;
+        }
+
+        /* Estructura del formulario en gris oscuro */
+        form {
+            background-color: #2d2d2d; /* Gris oscuro */
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2d2d2d;
+            margin-bottom: 25px;
+        }
+
+        /* Campos de entrada en blanco */
+        input, select {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #ffffff; /* Blanco para los campos */
+            color: #333;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #4CAF50; /* Resalte verde al escribir */
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Botón de registro en verde */
+        input[type="submit"] {
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Botón de navegación al CRUD en verde */
+        .btn-crud {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 24px;
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .btn-crud:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<center><h1>Registrate</h1>
-    <form action="/guardarUsuario" method="post">
-        <label for="primerNombre">Primer Nombre:</label>
-        <input type="text" id="primerNombre" name="primerNombre" placeholder="Ingresa tu primer nombre" required><br><br>
 
-        <label for="segundoNombre">Segundo Nombre:</label>
-        <input type="text" id="segundoNombre" name="segundoNombre" placeholder="Ingresa tu segundo nombre"><br><br>
+<h1>Registrarse</h1>
 
-        <label for="primerApellido">Primer Apellido:</label>
-        <input type="text" id="primerApellido" name="primerApellido" placeholder="Ingresa tu primer apellido" required><br><br>
+<form action="/guardarUsuario" method="post">
+    <input type="text" name="primerNombre" placeholder="Primer Nombre" required>
+    <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
+    <input type="text" name="primerApellido" placeholder="Primer Apellido" required>
+    <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
 
-        <label for="segundoApellido">Segundo Apellido:</label>
-        <input type="text" id="segundoApellido" name="segundoApellido" placeholder="Ingresa tu segundo apellido"><br><br>
+    <select name="tipoDocumento" required>
+        <option value="" disabled selected>Tipo de Documento</option>
+        <option value="CC">Cédula de Ciudadanía</option>
+        <option value="TI">Tarjeta de Identidad</option>
+        <option value="CE">Cédula de Extranjería</option>
+    </select>
 
-        <label for="tipoDocumento">Tipo de Documento:</label>
-        <select id="tipoDocumento" name="tipoDocumento" required>
-            <option value="">Selecciona un tipo de documento</option>
-            <option value="CC">Cédula de Ciudadanía</option>
-            <option value="TI">Tarjeta de Identidad</option>
-            <option value="CE">Cédula de Extranjería</option>
-        </select><br><br>
+    <input type="number" name="documento" placeholder="Número de Documento" required>
+    <input type="number" name="celular" placeholder="Teléfono Celular" required>
+    <input type="email" name="correo" placeholder="Correo Electrónico" required>
+    <input type="password" name="contrasena" placeholder="Contraseña" required>
 
-        <label for="documento">Número de Documento:</label>
-        <input type="number" id="documento" name="documento" placeholder="Ingresa tu número de documento" required><br><br>
+    <input type="submit" value="Registrarse">
+</form>
 
-        <label for="celular">Celular:</label>
-        <input type="tel" id="celular" name="celular" placeholder="Ingresa tu número de celular" required><br><br>
+<br>
+<a href="/crud" class="btn-crud">Ir a Gestión de Usuarios (CRUD)</a>
 
-        <label for="ficha">Ficha:</label>
-        <input type="number" id="ficha" name="ficha" placeholder="Ingresa tu número de ficha"><br><br>
-
-        <label for="correo">Email:</label>
-        <input type="email" id="correo" name="correo" placeholder="Ingresa tu email" required><br><br>
-
-        <label for="contrasena">Contraseña:</label>
-        <input type="password" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required><br><br>
-
-        <input type="submit" value="Registrarse">
-    </form>
-</center>
 </body>
 </html>

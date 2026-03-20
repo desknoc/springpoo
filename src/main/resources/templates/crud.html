@@ -1,94 +1,182 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <title>CRUD Usuarios</title>
-</head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios - CRUD</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffffff; /* Fondo blanco pedido */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        h1 { color: #2d2d2d; margin-bottom: 30px; }
+        h2 { color: #2d2d2d; margin-top: 20px; font-size: 1.2rem; }
+
+        /* Contenedores Gris Oscuro */
+        .section-container {
+            background-color: #2d2d2d; /* Gris oscuro pedido */
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        /* Formularios en Flex (uno sobre otro) */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-form {
+            flex-direction: row; /* Buscador en una línea */
+            justify-content: center;
+        }
+
+        /* Campos Blancos */
+        input, select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #ffffff; /* Campos blancos pedido */
+            color: #333;
+            outline: none;
+        }
+
+        /* Botones Verdes */
+        button, .btn-delete, .btn-back {
+            background-color: #4CAF50; /* Verde pedido */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        button:hover, .btn-delete:hover, .btn-back:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos de la Tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:hover { background-color: #f2f2f2; }
+
+        /* Resultado de búsqueda */
+        .result-box {
+            background-color: #3d3d3d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .btn-back {
+            margin-bottom: 20px;
+            background-color: #666; /* Gris para volver */
+        }
+    </style>
+</head>
 <body>
 
-<h1>CRUD de Usuarios</h1>
-<h2>Buscar Usuario</h2>
+<a href="/" class="btn-back">⬅ Volver al Registro</a>
 
-<form action="/crud/buscar" method="get">
+<h1>Panel de Gestión de Usuarios</h1>
 
-    <input type="number" name="id" placeholder="ID usuario">
+<div class="section-container">
+    <h2>🔍 Buscar Usuario por ID</h2>
+    <form action="/crud/buscar" method="get" class="search-form">
+        <input type="number" name="id" placeholder="Ingrese ID de usuario" required style="flex-grow: 1;">
+        <button type="submit">Buscar</button>
+    </form>
 
-    <button type="submit">Buscar</button>
-
-</form>
-
-<div th:if="${usuarioEncontrado != null}">
-
-    <h3>Usuario encontrado</h3>
-
-    <p>ID: <span th:text="${usuarioEncontrado.idUsuario}"></span></p>
-    <p>Nombre: <span th:text="${usuarioEncontrado.primerNombre}"></span></p>
-    <p>Apellido: <span th:text="${usuarioEncontrado.primerApellido}"></span></p>
-
+    <div th:if="${usuarioEncontrado != null}" class="result-box">
+        <h3>✅ Usuario encontrado:</h3>
+        <p><strong>ID:</strong> <span th:text="${usuarioEncontrado.idUsuario}"></span></p>
+        <p><strong>Nombre:</strong> <span th:text="${usuarioEncontrado.primerNombre + ' ' + usuarioEncontrado.primerApellido}"></span></p>
+        <p><strong>Correo:</strong> <span th:text="${usuarioEncontrado.correo}"></span></p>
+    </div>
 </div>
 
-<h2>Crear Usuario</h2>
+<div class="section-container">
+    <h2>➕ Registrar Nuevo Usuario</h2>
+    <form action="/crud/crear" method="post">
+        <input type="text" name="primerNombre" placeholder="Primer Nombre" required>
+        <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
+        <input type="text" name="primerApellido" placeholder="Primer Apellido" required>
+        <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
+        <input type="text" name="tipoDocumento" placeholder="Tipo Documento (Ej: CC)" required>
+        <input type="number" name="documento" placeholder="Documento" required>
+        <input type="number" name="celular" placeholder="Celular" required>
+        <input type="email" name="correo" placeholder="Correo" required>
+        <input type="password" name="contrasena" placeholder="Contraseña" required>
+        <button type="submit">Crear Usuario</button>
+    </form>
+</div>
 
-<form action="/crud/crear" method="post">
-
-    <input type="text" name="primerNombre" placeholder="Primer Nombre">
-
-    <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
-
-    <input type="text" name="primerApellido" placeholder="Primer Apellido">
-
-    <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
-
-    <input type="text" name="tipoDocumento" placeholder="Tipo Documento">
-
-    <input type="number" name="documento" placeholder="Documento">
-
-    <input type="number" name="celular" placeholder="Celular">
-
-    <input type="email" name="correo" placeholder="Correo">
-
-    <input type="password" name="contrasena" placeholder="Contraseña">
-
-    <button type="submit">Crear</button>
-
-</form>
-
-<hr>
-
-<h2>Lista de Usuarios</h2>
-
-<table border="1">
-
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Documento</th>
-        <th>Correo</th>
-        <th>Acciones</th>
-    </tr>
-
-    <tr th:each="u : ${usuarios}">
-
-        <td th:text="${u.idUsuario}"></td>
-        <td th:text="${u.primerNombre}"></td>
-        <td th:text="${u.primerApellido}"></td>
-        <td th:text="${u.documento}"></td>
-        <td th:text="${u.correo}"></td>
-
-        <td>
-
-            <a th:href="@{/crud/eliminar/{id}(id=${u.idUsuario})}">
-                Eliminar
-            </a>
-
-        </td>
-
-    </tr>
-
-</table>
+<div class="section-container">
+    <h2>📋 Lista Maestra de Usuarios</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Documento</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${usuarios}">
+            <td th:text="${u.idUsuario}"></td>
+            <td th:text="${u.primerNombre}"></td>
+            <td th:text="${u.primerApellido}"></td>
+            <td th:text="${u.documento}"></td>
+            <td th:text="${u.correo}"></td>
+            <td>
+                <a th:href="@{/crud/eliminar/{id}(id=${u.idUsuario})}" class="btn-delete"
+                   onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
-
 </html>
