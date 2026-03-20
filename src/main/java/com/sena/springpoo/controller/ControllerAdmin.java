@@ -82,6 +82,12 @@ public class ControllerAdmin {
             mensaje = eliminado ? "User deleted" : "User not found";
         }
 
+        if(eliminado){
+            return new ResponseEntity<>(mensaje, HttpStatus.OK); // 200
+        } else {
+            return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND); // 404
+        }
+    }
 
     @GetMapping("/usuarios")
     public String verUsuarios(Model model){
