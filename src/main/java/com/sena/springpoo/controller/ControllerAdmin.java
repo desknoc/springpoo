@@ -45,7 +45,16 @@ public class ControllerAdmin {
         usuario.setCorreo(correo);
         usuario.setContrasena(contrasena);
 
-        PersistenceUsuario.save(usuario);
+        boolean guardado = PersistenceUsuario.save(usuario);
+
+        // 🌍 MENSAJES SEGÚN IDIOMA
+        String mensaje;
+
+        if(idioma.contains("es")){
+            mensaje = guardado ? "Usuario guardado correctamente" : "Error al guardar usuario";
+        } else {
+            mensaje = guardado ? "User saved successfully" : "Error saving user";
+        }
 
         return "Registro";
     }
