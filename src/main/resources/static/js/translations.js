@@ -17,6 +17,24 @@ const translations = {
         "registro.boton":               "Registrarse",
         "registro.irCrud":              "Ir a Gestión de Usuarios (CRUD)",
 
+        // === Login ===
+        "login.pestania":               "Iniciar Sesión — SENA",
+        "login.panel.titulo":           "Panel SENA",
+        "login.panel.subtitulo":        "Sistema de Gestión de Aprendices",
+        "login.tarjeta.titulo":         "Iniciar Sesión",
+        "login.alerta.error":           "Tipo de documento, documento o contraseña incorrectos.",
+        "login.alerta.logout":          "Sesión cerrada correctamente.",
+        "login.label.tipoDoc":          "Tipo de documento",
+        "login.opcion.selecciona":      "-- Selecciona --",
+        "login.opcion.cc":              "CC — Cédula de Ciudadanía",
+        "login.opcion.ti":              "TI — Tarjeta de Identidad",
+        "login.label.documento":        "Número de documento",
+        "login.placeholder.documento":  "Ej: 12345678901",
+        "login.label.contrasena":       "Contraseña",
+        "login.placeholder.contrasena": "••••••••",
+        "login.boton":                  "Ingresar al sistema",
+        "login.footer":                 "SENA — Servicio Nacional de Aprendizaje",
+
         // === CRUD ===
         "crud.titulo":                  "Panel de Gestión de Usuarios",
         "crud.buscar.titulo":           "🔍 Buscar Usuario por ID",
@@ -94,6 +112,24 @@ const translations = {
         "registro.contrasena":          "Password",
         "registro.boton":               "Sign Up",
         "registro.irCrud":              "Go to User Management (CRUD)",
+
+        // === Login ===
+        "login.pestania":               "Log In — SENA",
+        "login.panel.titulo":           "SENA Panel",
+        "login.panel.subtitulo":        "Apprentice Management System",
+        "login.tarjeta.titulo":         "Log In",
+        "login.alerta.error":           "Incorrect document type, document number, or password.",
+        "login.alerta.logout":          "Logged out successfully.",
+        "login.label.tipoDoc":          "Document Type",
+        "login.opcion.selecciona":      "-- Select --",
+        "login.opcion.cc":              "CC — Citizenship Card",
+        "login.opcion.ti":              "TI — Identity Card",
+        "login.label.documento":        "Document Number",
+        "login.placeholder.documento":  "e.g., 12345678901",
+        "login.label.contrasena":       "Password",
+        "login.placeholder.contrasena": "••••••••",
+        "login.boton":                  "Log In to System",
+        "login.footer":                 "SENA — National Training Service",
 
         // === CRUD ===
         "crud.titulo":                  "User Management Panel",

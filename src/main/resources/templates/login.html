@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-i18n-title="login.pestania">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +16,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* ── Selector de idioma ── */
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 2px solid #4CAF50;
+            background-color: transparent;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: white;
         }
 
         .login-wrapper {
@@ -146,6 +175,12 @@
 </head>
 <body>
 
+<!-- ✅ Selector de idioma -->
+<div class="lang-selector">
+    <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
+    <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
+</div>
+
 <div class="login-wrapper">
 
     <!-- Encabezado de marca -->
@@ -156,24 +191,24 @@
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
             </svg>
         </div>
-        <h1>Panel SENA</h1>
-        <p>Sistema de Gestión de Aprendices</p>
+        <h1 data-i18n="login.panel.titulo">Panel SENA</h1>
+        <p data-i18n="login.panel.subtitulo">Sistema de Gestión de Aprendices</p>
     </div>
 
     <!-- Tarjeta de login -->
     <div class="card">
-        <h2>Iniciar Sesión</h2>
+        <h2 data-i18n="login.tarjeta.titulo">Iniciar Sesión</h2>
 
         <!-- Mensaje de error de credenciales -->
         <div class="alert alert-error" th:if="${param.error}" style="margin-bottom:18px;">
             <span>⚠</span>
-            <span>Tipo de documento, documento o contraseña incorrectos.</span>
+            <span data-i18n="login.alerta.error">Tipo de documento, documento o contraseña incorrectos.</span>
         </div>
 
         <!-- Mensaje de sesión cerrada -->
         <div class="alert alert-success" th:if="${param.logout}" style="margin-bottom:18px;">
             <span>✓</span>
-            <span>Sesión cerrada correctamente.</span>
+            <span data-i18n="login.alerta.logout">Sesión cerrada correctamente.</span>
         </div>
 
         <!--
@@ -183,24 +218,25 @@
         <form th:action="@{/login}" method="post" id="loginForm">
 
             <div class="field">
-                <label for="tipo_documento_ui">Tipo de documento</label>
+                <label for="tipo_documento_ui" data-i18n="login.label.tipoDoc">Tipo de documento</label>
                 <select id="tipo_documento_ui">
-                    <option value="">-- Selecciona --</option>
-                    <option value="CC">CC — Cédula de Ciudadanía</option>
-                    <option value="TI">TI — Tarjeta de Identidad</option>
+                    <option value="" data-i18n="login.opcion.selecciona">-- Selecciona --</option>
+                    <option value="CC" data-i18n="login.opcion.cc">CC — Cédula de Ciudadanía</option>
+                    <option value="TI" data-i18n="login.opcion.ti">TI — Tarjeta de Identidad</option>
                 </select>
             </div>
 
             <div class="field">
-                <label for="numero_documento_ui">Número de documento</label>
+                <label for="numero_documento_ui" data-i18n="login.label.documento">Número de documento</label>
                 <input id="numero_documento_ui"
                        type="number"
+                       data-i18n-placeholder="login.placeholder.documento"
                        placeholder="Ej: 12345678901"
                        required />
             </div>
 
             <div class="field">
-                <label for="contrasena">Contraseña</label>
+                <label for="contrasena" data-i18n="login.label.contrasena">Contraseña</label>
                 <!--
                   name="contrasena" coincide con passwordParameter("contrasena")
                   configurado en SecurityConfig.java
@@ -208,6 +244,7 @@
                 <input id="contrasena"
                        type="password"
                        name="contrasena"
+                       data-i18n-placeholder="login.placeholder.contrasena"
                        placeholder="••••••••"
                        required />
             </div>
@@ -219,14 +256,17 @@
             -->
             <input type="hidden" id="documento" name="documento" />
 
-            <button type="submit" class="btn-login">Ingresar al sistema</button>
+            <button type="submit" class="btn-login" data-i18n="login.boton">Ingresar al sistema</button>
 
         </form>
 
-        <div class="divider">SENA &mdash; Servicio Nacional de Aprendizaje</div>
+        <div class="divider" data-i18n="login.footer">SENA &mdash; Servicio Nacional de Aprendizaje</div>
     </div>
 
 </div>
+
+<script th:src="@{/js/translations.js}"></script>
+<script th:src="@{/js/i18n.js}"></script>
 
 <script>
     // Antes de enviar el formulario, combina tipo_documento + '#' + numero
