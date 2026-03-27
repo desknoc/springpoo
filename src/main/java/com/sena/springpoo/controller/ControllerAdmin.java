@@ -32,9 +32,9 @@ public class ControllerAdmin {
     @ResponseBody
     public ResponseEntity<String> registrarUsuario(
             @RequestParam String primerNombre,
-            @RequestParam String segundoNombre,
+            @RequestParam(required = false) String segundoNombre,
             @RequestParam String primerApellido,
-            @RequestParam String segundoApellido,
+            @RequestParam(required = false) String segundoApellido,
             @RequestParam String tipoDocumento,
             @RequestParam long documento,
             @RequestParam long celular,

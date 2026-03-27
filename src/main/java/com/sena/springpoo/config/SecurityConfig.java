@@ -31,10 +31,9 @@ public class SecurityConfig {
             // ── Reglas de acceso por ruta ──
             .authorizeHttpRequests(auth -> auth
                 // Rutas públicas
-                .requestMatchers("/", "/login", "/js/**", "/css/**").permitAll()
+                .requestMatchers("/", "/login", "/js/**", "/css/**", "/guardarUsuario").permitAll()
                 // Solo ADMIN puede acceder al panel CRUD y a la API
-                .requestMatchers("/crud/**", "/usuariosAPI/**",
-                                 "/guardarUsuario", "/eliminarUsuario/**").hasRole("ADMIN")
+                .requestMatchers("/crud/**", "/usuariosAPI/**", "/eliminarUsuario/**").hasRole("ADMIN")
                 // Cualquier otra ruta requiere estar autenticado
                 .anyRequest().authenticated()
             )
