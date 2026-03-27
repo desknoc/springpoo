@@ -12,8 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -31,20 +29,20 @@ public class CustomAuthProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        // Spring Security envía el campo "username" → aquí llega el número de documento
-        String documentoStr = authentication.getName();
-        String contrasena   = authentication.getCredentials().toString();
+        // El form combina tipo_documento y documento como "CC#12345678901"
+        // (ver login.html: el JS lo arma antes de hacer submit)
+        String principal  = authentication.getName();
+        String contrasena = authentication.getCredentials().toString();
 
-        // Leemos tipo_documento del request HTTP actual
-        ServletRequestAttributes attrs =
-                (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        String tipoDocumento = attrs.getRequest().getParameter("tipo_documento");
-
-        // Validación básica de campos
-        if (tipoDocumento == null || tipoDocumento.isBlank() || documentoStr.isBlank()) {
-            logger.warn("[CustomAuthProvider] Intento de login con campos vacíos.");
+        // Separar tipo_documento y documento
+        String[] partes = principal.split("#", 2);
+        if (partes.length != 2 || partes[0].isBlank() || partes[1].isBlank()) {
+            logger.warn("[CustomAuthProvider] Username mal formado: '{}'", principal);
             throw new BadCredentialsException("Todos los campos son obligatorios.");
         }
+
+        String tipoDocumento = partes[0];
+        String documentoStr  = partes[1];
 
         long documento;
         try {

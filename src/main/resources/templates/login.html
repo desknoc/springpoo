@@ -90,6 +90,7 @@
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
             -webkit-appearance: none;
+            appearance: none;
         }
         select option { background: #2d2d2d; }
         select:focus, input:focus {
@@ -179,11 +180,11 @@
           th:action="@{/login}" genera la URL con el context-path correcto
           y agrega automáticamente el token CSRF de Spring Security
         -->
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{/login}" method="post" id="loginForm">
 
             <div class="field">
-                <label for="tipo_documento">Tipo de documento</label>
-                <select id="tipo_documento" name="tipo_documento">
+                <label for="tipo_documento_ui">Tipo de documento</label>
+                <select id="tipo_documento_ui">
                     <option value="">-- Selecciona --</option>
                     <option value="CC">CC — Cédula de Ciudadanía</option>
                     <option value="TI">TI — Tarjeta de Identidad</option>
@@ -191,22 +192,17 @@
             </div>
 
             <div class="field">
-                <label for="documento">Número de documento</label>
-                <!--
-                  El name="documento" coincide con usernameParameter("documento")
-                  configurado en SecurityConfig.java
-                -->
-                <input id="documento"
+                <label for="numero_documento_ui">Número de documento</label>
+                <input id="numero_documento_ui"
                        type="number"
-                       name="documento"
-                       placeholder="Ej: 1234567890"
+                       placeholder="Ej: 12345678901"
                        required />
             </div>
 
             <div class="field">
                 <label for="contrasena">Contraseña</label>
                 <!--
-                  El name="contrasena" coincide con passwordParameter("contrasena")
+                  name="contrasena" coincide con passwordParameter("contrasena")
                   configurado en SecurityConfig.java
                 -->
                 <input id="contrasena"
@@ -216,6 +212,13 @@
                        required />
             </div>
 
+            <!--
+              Campo oculto: Spring Security leerá "documento" como el username.
+              El JS lo llena con "TIPO#numero" justo antes del submit.
+              Ejemplo: "CC#12345678901"
+            -->
+            <input type="hidden" id="documento" name="documento" />
+
             <button type="submit" class="btn-login">Ingresar al sistema</button>
 
         </form>
@@ -224,6 +227,24 @@
     </div>
 
 </div>
+
+<script>
+    // Antes de enviar el formulario, combina tipo_documento + '#' + numero
+    // en el campo oculto 'documento' (que Spring Security usa como username).
+    // Ejemplo resultado: "CC#12345678901"
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        var tipo   = document.getElementById('tipo_documento_ui').value;
+        var numero = document.getElementById('numero_documento_ui').value;
+
+        if (!tipo || !numero) {
+            e.preventDefault();
+            alert('Por favor selecciona el tipo de documento y escribe el número.');
+            return;
+        }
+
+        document.getElementById('documento').value = tipo + '#' + numero;
+    });
+</script>
 
 </body>
 </html>
