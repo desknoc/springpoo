@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Usuarios - CRUD</title>
+    <!-- CSRF Token Meta Tags para peticiones JS (fetch) -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -362,11 +365,15 @@
         };
 
         try {
+            const csrfToken  = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
             const res = await fetch(`/crud/actualizar/${id}`, {
                 method:  "PUT",
                 headers: {
                     "Content-Type":    "application/json",
-                    "Accept-Language": lang
+                    "Accept-Language": lang,
+                    [csrfHeader]:      csrfToken
                 },
                 body: JSON.stringify(body)
             });
