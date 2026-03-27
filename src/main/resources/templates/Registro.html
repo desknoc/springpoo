@@ -111,7 +111,7 @@
 
 <h1 data-i18n="registro.titulo">Registrarse</h1>
 
-<form action="/guardarUsuario" method="post">
+<form th:action="@{/guardarUsuario}" method="post">
 
     <input type="text"
            name="primerNombre"

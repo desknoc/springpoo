@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -52,7 +53,10 @@ public class ControllerAdmin {
         usuario.setDocumento(documento);
         usuario.setCelular(celular);
         usuario.setCorreo(correo);
-        usuario.setContrasena(contrasena);
+        
+        // Hashing de la contraseña antes de guardar
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        usuario.setContrasena(encoder.encode(contrasena));
 
         boolean guardado = PersistenceUsuario.save(usuario);
 

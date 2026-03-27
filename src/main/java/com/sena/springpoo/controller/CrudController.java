@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -39,6 +40,11 @@ public class CrudController {
 
     @PostMapping("/crear")
     public String crearUsuario(@ModelAttribute Usuario usuario) {
+        
+        // Hashear la contraseña antes de guardar en la BD
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        usuario.setContrasena(encoder.encode(usuario.getContrasena()));
+        
         boolean creado = PersistenceUsuario.save(usuario);
         if (!creado) {
             logger.error("[CrudController.crearUsuario] Error al insertar el usuario en la BD.");

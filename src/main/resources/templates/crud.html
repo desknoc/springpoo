@@ -197,7 +197,7 @@
 <!-- ── Crear ── -->
 <div class="section-container">
     <h2 data-i18n="crud.crear.titulo" style="color:white;">➕ Registrar Nuevo Usuario</h2>
-    <form action="/crud/crear" method="post">
+    <form th:action="@{/crud/crear}" method="post">
         <input type="text"     name="primerNombre"    data-i18n-placeholder="crud.crear.primerNombre"    placeholder="Primer Nombre"    required>
         <input type="text"     name="segundoNombre"   data-i18n-placeholder="crud.crear.segundoNombre"   placeholder="Segundo Nombre">
         <input type="text"     name="primerApellido"  data-i18n-placeholder="crud.crear.primerApellido"  placeholder="Primer Apellido"  required>
