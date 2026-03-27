@@ -85,6 +85,16 @@ public class CrudController {
         logger.info("[CrudController.actualizarUsuario] Documento recibido: {}", usuario.getDocumento());
 
         usuario.setIdUsuario(id);
+        
+        // Hashear la contraseña SOLAMENTE si cambió (es decir, si no es igual al BCrypt que ya estaba en la BD)
+        Usuario existente = PersistenceUsuario.getUsuarioById(id);
+        if (existente != null && usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
+            if (!usuario.getContrasena().equals(existente.getContrasena())) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                usuario.setContrasena(encoder.encode(usuario.getContrasena()));
+                logger.info("[CrudController.actualizarUsuario] La contraseña fue modificada y re-hasheada.");
+            }
+        }
 
         boolean actualizado = PersistenceUsuario.update(usuario);
         logger.info("[CrudController.actualizarUsuario] Resultado de la BD: {}", actualizado);

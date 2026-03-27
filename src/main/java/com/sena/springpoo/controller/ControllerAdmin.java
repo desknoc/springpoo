@@ -27,10 +27,9 @@ public class ControllerAdmin {
         return "login";
     }
 
-    // ✅ CREAR USUARIO CON RESPUESTA HTTP + HEADER
+    // ✅ CREAR USUARIO REDIRIGIENDO AL LOGIN
     @PostMapping("/guardarUsuario")
-    @ResponseBody
-    public ResponseEntity<String> registrarUsuario(
+    public String registrarUsuario(
             @RequestParam String primerNombre,
             @RequestParam(required = false) String segundoNombre,
             @RequestParam String primerApellido,
@@ -39,8 +38,7 @@ public class ControllerAdmin {
             @RequestParam long documento,
             @RequestParam long celular,
             @RequestParam String correo,
-            @RequestParam String contrasena,
-            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
+            @RequestParam String contrasena
     ){
 
         Usuario usuario = new Usuario();
@@ -60,22 +58,12 @@ public class ControllerAdmin {
 
         boolean guardado = PersistenceUsuario.save(usuario);
 
-        // 🌍 MENSAJES SEGÚN IDIOMA
-        String mensaje;
-
-        if(idioma.contains("es")){
-            mensaje = guardado ? "Usuario guardado correctamente" : "Error al guardar usuario";
-        } else {
-            mensaje = guardado ? "User saved successfully" : "Error saving user";
-        }
-
-        // 📡 CÓDIGOS HTTP
         if(guardado){
             logger.info("[ControllerAdmin.registrarUsuario] Usuario '{}' guardado correctamente.", correo);
-            return new ResponseEntity<>(mensaje, HttpStatus.CREATED); // 201
+            return "redirect:/login";
         } else {
             logger.error("[ControllerAdmin.registrarUsuario] Fallo al guardar el usuario con correo '{}'.", correo);
-            return new ResponseEntity<>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR); // 500
+            return "error/500";
         }
     }
 

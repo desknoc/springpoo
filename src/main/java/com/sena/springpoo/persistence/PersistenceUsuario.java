@@ -124,10 +124,14 @@ public class PersistenceUsuario {
                     u.setSegundoApellido(rs.getString("segundo_apellido"));
                     u.setTipoDocumento(rs.getString("tipo_documento"));
                     u.setDocumento(rs.getLong("documento"));
-                    // BUG CORREGIDO: antes no se cargaba celular ni contrasena del ResultSet,
-                    // por eso el modal los recibía vacíos (0 y null), la validación JS
-                    // los marcaba como campos vacíos y cortaba el fetch antes de enviarlo.
-                    u.setCelular(Long.parseLong(rs.getString("celular")));
+                    // BUG CORREGIDO: manejar 'N/A' o vacíos para que no crashee con NumberFormatException
+                    String celStr = rs.getString("celular");
+                    try {
+                        u.setCelular(Long.parseLong(celStr));
+                    } catch (NumberFormatException e) {
+                        u.setCelular(0L); // Valor por defecto si no es numérico
+                    }
+
                     u.setCorreo(rs.getString("correo_electronico"));
                     u.setContrasena(rs.getString("contrasena"));
                     return u;
