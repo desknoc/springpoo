@@ -2,6 +2,7 @@ package com.sena.springpoo.controller;
 
 import com.sena.springpoo.models.Usuario;
 import com.sena.springpoo.persistence.PersistenceUsuario;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class CrudController {
     }
 
 
-    // ── Actualiza el usuario recibido como JSON en el body ──
+    // ── Actualiza los datos de un usuario desde el modal ──
     @PutMapping("/actualizar/{id}")
     @ResponseBody
     public ResponseEntity<String> actualizarUsuario(
@@ -56,19 +57,24 @@ public class CrudController {
             @RequestBody Usuario usuario,
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ) {
+        // LOG DE CONTROL: Mira tu consola de IntelliJ/Eclipse al presionar guardar
+        System.out.println("Intentando actualizar ID: " + id);
+        System.out.println("Nombre recibido: " + usuario.getPrimerNombre());
+        System.out.println("Documento recibido: " + usuario.getDocumento());
+
         usuario.setIdUsuario(id);
 
+        // Verificamos si la persistencia realmente falla
         boolean actualizado = PersistenceUsuario.update(usuario);
+        System.out.println("Resultado de la BD: " + actualizado);
 
-        if (actualizado) {
-            return ResponseEntity.ok(
-                    idioma.contains("es") ? "Usuario actualizado" : "User updated"
-            );
-        } else {
-            return ResponseEntity.status(404).body(
-                    idioma.contains("es") ? "Usuario no encontrado" : "User not found"
-            );
-        }
+        String mensaje = idioma.contains("es")
+                ? (actualizado ? "Usuario actualizado correctamente" : "Error en BD")
+                : (actualizado ? "User updated" : "DB Error");
+
+        return actualizado
+                ? ResponseEntity.ok(mensaje)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mensaje);
     }
 
 

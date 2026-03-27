@@ -260,11 +260,6 @@
         <input type="text"     id="editSegundoNombre"   data-i18n-placeholder="modal.editar.segundoNombre"   placeholder="Segundo Nombre">
         <input type="text"     id="editPrimerApellido"  data-i18n-placeholder="modal.editar.primerApellido"  placeholder="Primer Apellido">
         <input type="text"     id="editSegundoApellido" data-i18n-placeholder="modal.editar.segundoApellido" placeholder="Segundo Apellido">
-        <!--
-            BUG CORREGIDO: el atributo tenía "modal.editar.TipoDocumento" (T mayúscula).
-            Las claves en translations.js son case-sensitive → no encontraba la clave
-            → el placeholder nunca se traducía. Corregido a "modal.editar.tipoDocumento".
-        -->
         <input type="text"     id="editTipoDocumento"   data-i18n-placeholder="modal.editar.tipoDocumento"   placeholder="Tipo de Documento">
         <input type="number"   id="editDocumento"       data-i18n-placeholder="modal.editar.documento"       placeholder="Documento">
         <input type="number"   id="editCelular"         data-i18n-placeholder="modal.editar.celular"         placeholder="Celular">
@@ -361,10 +356,6 @@
             segundoApellido: segundoApellido,
             tipoDocumento:   tipoDocumento,
             documento:       Number(documentoStr),
-            // BUG CORREGIDO: antes el body tenía `celular: celular`.
-            // La variable declarada se llamaba `celularStr`, no `celular`.
-            // Eso lanzaba ReferenceError → el catch lo capturaba → toast de error
-            // inmediato sin siquiera intentar el fetch al servidor.
             celular:         Number(celularStr),
             correo:          correo,
             contrasena:      contrasena

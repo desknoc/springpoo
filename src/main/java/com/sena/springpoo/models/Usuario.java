@@ -2,18 +2,18 @@ package com.sena.springpoo.models;
 
 public class Usuario {
 
-    private long idUsuario;
+    private Long idUsuario;
     private String primerNombre;
     private String segundoNombre;
     private String primerApellido;
     private String segundoApellido;
     private String tipoDocumento;
-    private long documento;
-    private long celular;
+    private Long documento;
+    private Long celular;
     private String correo;
     private String contrasena;
 
-    public Usuario(long celular, String contrasena, String correo, long documento, long idUsuario, String primerApellido, String primerNombre, String segundoApellido, String segundoNombre, String tipoDocumento) {
+    public Usuario(Long celular, String contrasena, String correo, Long documento, Long idUsuario, String primerApellido, String primerNombre, String segundoApellido, String segundoNombre, String tipoDocumento) {
         this.celular = celular;
         this.contrasena = contrasena;
         this.correo = correo;
@@ -29,11 +29,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public long getCelular() {
+    public Long getCelular() {
         return celular;
     }
 
-    public void setCelular(long celular) {
+    public void setCelular(Long celular) {
         this.celular = celular;
     }
 
@@ -53,19 +53,19 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public long getDocumento() {
+    public Long getDocumento() {
         return documento;
     }
 
-    public void setDocumento(long documento) {
+    public void setDocumento(Long documento) {
         this.documento = documento;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(long idUsuario) {
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 
