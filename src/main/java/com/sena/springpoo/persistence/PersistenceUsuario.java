@@ -1,6 +1,8 @@
 package com.sena.springpoo.persistence;
 
 import com.sena.springpoo.models.Usuario;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersistenceUsuario {
+
+    private static final Logger logger = LoggerFactory.getLogger(PersistenceUsuario.class);
 
     // ══════════════════════════════════════════════════════════════
     //  GUARDAR
@@ -24,7 +28,7 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            System.err.println("[PersistenceUsuario.save] No se pudo obtener conexión a la BD.");
+            logger.error("[PersistenceUsuario.save] No se pudo obtener conexión a la BD.");
             return false;
         }
 
@@ -44,8 +48,7 @@ public class PersistenceUsuario {
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("[PersistenceUsuario.save] Error SQL: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("[PersistenceUsuario.save] Error SQL: {}", e.getMessage(), e);
         }
 
         return false;
@@ -61,8 +64,7 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            // En lugar de devolver lista vacía, devolvemos null para que
-            // el CrudController sepa que debe ir a la página 500.
+            logger.error("[PersistenceUsuario.getUsuarios] No se pudo obtener conexión a la BD.");
             return null;
         }
 
@@ -80,8 +82,7 @@ public class PersistenceUsuario {
             }
 
         } catch (SQLException e) {
-            System.err.println("[PersistenceUsuario.getUsuarios] Error SQL: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("[PersistenceUsuario.getUsuarios] Error SQL: {}", e.getMessage(), e);
         }
 
         return lista;
@@ -96,7 +97,7 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            System.err.println("[PersistenceUsuario.getUsuarioById] No se pudo obtener conexión a la BD.");
+            logger.error("[PersistenceUsuario.getUsuarioById] No se pudo obtener conexión a la BD.");
             return null;
         }
 
@@ -125,8 +126,7 @@ public class PersistenceUsuario {
             }
 
         } catch (SQLException e) {
-            System.err.println("[PersistenceUsuario.getUsuarioById] Error SQL: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("[PersistenceUsuario.getUsuarioById] Error SQL: {}", e.getMessage(), e);
         }
 
         return null;
@@ -153,7 +153,7 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            System.err.println("[PersistenceUsuario.update] No se pudo obtener conexión a la BD.");
+            logger.error("[PersistenceUsuario.update] No se pudo obtener conexión a la BD.");
             return false;
         }
 
@@ -185,14 +185,12 @@ public class PersistenceUsuario {
             ps.setLong(10,   usuario.getIdUsuario());   // WHERE id_usuario = ?
 
             int filasAfectadas = ps.executeUpdate();
-            System.out.println("[PersistenceUsuario.update] id=" + usuario.getIdUsuario()
-                    + " | filas afectadas=" + filasAfectadas);
+            logger.info("[PersistenceUsuario.update] id={} | filas afectadas={}", usuario.getIdUsuario(), filasAfectadas);
 
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
-            System.err.println("[PersistenceUsuario.update] Error SQL: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("[PersistenceUsuario.update] Error SQL: {}", e.getMessage(), e);
         }
 
         return false;
@@ -207,7 +205,7 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            System.err.println("[PersistenceUsuario.delete] No se pudo obtener conexión a la BD.");
+            logger.error("[PersistenceUsuario.delete] No se pudo obtener conexión a la BD.");
             return false;
         }
 
@@ -219,8 +217,7 @@ public class PersistenceUsuario {
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
-            System.err.println("[PersistenceUsuario.delete] Error SQL: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("[PersistenceUsuario.delete] Error SQL: {}", e.getMessage(), e);
         }
 
         return false;

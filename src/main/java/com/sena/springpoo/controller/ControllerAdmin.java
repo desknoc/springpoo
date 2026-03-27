@@ -2,6 +2,8 @@ package com.sena.springpoo.controller;
 
 import com.sena.springpoo.models.Usuario;
 import com.sena.springpoo.persistence.PersistenceUsuario;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Controller
 public class ControllerAdmin {
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerAdmin.class);
 
     @GetMapping("/")
     public String inicio(){
@@ -58,8 +62,10 @@ public class ControllerAdmin {
 
         // 📡 CÓDIGOS HTTP
         if(guardado){
+            logger.info("[ControllerAdmin.registrarUsuario] Usuario '{}' guardado correctamente.", correo);
             return new ResponseEntity<>(mensaje, HttpStatus.CREATED); // 201
         } else {
+            logger.error("[ControllerAdmin.registrarUsuario] Fallo al guardar el usuario con correo '{}'.", correo);
             return new ResponseEntity<>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
@@ -83,8 +89,10 @@ public class ControllerAdmin {
         }
 
         if(eliminado){
+            logger.info("[ControllerAdmin.eliminarUsuario] Usuario con ID '{}' eliminado correctamente.", id);
             return new ResponseEntity<>(mensaje, HttpStatus.OK); // 200
         } else {
+            logger.warn("[ControllerAdmin.eliminarUsuario] No se encontró el usuario con ID '{}' para eliminar.", id);
             return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND); // 404
         }
     }
@@ -96,7 +104,8 @@ public class ControllerAdmin {
 
         List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
 
-        if(usuarios.isEmpty()){
+        if(usuarios == null || usuarios.isEmpty()){
+            logger.warn("[ControllerAdmin.verUsuarios] No hay usuarios registrados o no se pudo conectar a la BD.");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
         }
 

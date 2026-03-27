@@ -2,6 +2,8 @@ package com.sena.springpoo.controller;
 
 import com.sena.springpoo.models.Usuario;
 import com.sena.springpoo.persistence.PersistenceUsuario;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/crud")
 public class CrudController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CrudController.class);
+
 
     @GetMapping
     public String listar(Model model) {
@@ -24,6 +28,7 @@ public class CrudController {
         // Basado en el código, si conn == null, devuelve una lista vacía.
         // Para detectar error de conexión real, validaremos si la conexión es nula.
         if (usuarios == null) {
+            logger.error("[CrudController.listar] No se pudo obtener la lista de usuarios. Fallo de conexión a la BD.");
             return "error/500";
         }
 
@@ -36,6 +41,7 @@ public class CrudController {
     public String crearUsuario(@ModelAttribute Usuario usuario) {
         boolean creado = PersistenceUsuario.save(usuario);
         if (!creado) {
+            logger.error("[CrudController.crearUsuario] Error al insertar el usuario en la BD.");
             return "error/500";
         }
         return "redirect:/crud";
@@ -51,6 +57,7 @@ public class CrudController {
         Usuario usuario = PersistenceUsuario.getUsuarioById(id);
 
         if (usuario == null) {
+            logger.warn("[CrudController.obtenerUsuario] No se encontró usuario con ID {}.", id);
             return ResponseEntity.notFound().build(); // 404
         }
 
@@ -66,16 +73,19 @@ public class CrudController {
             @RequestBody Usuario usuario,
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ) {
-        // LOG DE CONTROL: Mira tu consola de IntelliJ/Eclipse al presionar guardar
-        System.out.println("Intentando actualizar ID: " + id);
-        System.out.println("Nombre recibido: " + usuario.getPrimerNombre());
-        System.out.println("Documento recibido: " + usuario.getDocumento());
+        // LOG DE CONTROL
+        logger.info("[CrudController.actualizarUsuario] Intentando actualizar ID: {}", id);
+        logger.info("[CrudController.actualizarUsuario] Nombre recibido: {}", usuario.getPrimerNombre());
+        logger.info("[CrudController.actualizarUsuario] Documento recibido: {}", usuario.getDocumento());
 
         usuario.setIdUsuario(id);
 
-        // Verificamos si la persistencia realmente falla
         boolean actualizado = PersistenceUsuario.update(usuario);
-        System.out.println("Resultado de la BD: " + actualizado);
+        logger.info("[CrudController.actualizarUsuario] Resultado de la BD: {}", actualizado);
+
+        if (!actualizado) {
+            logger.error("[CrudController.actualizarUsuario] Fallo al actualizar el usuario con ID {}.", id);
+        }
 
         String mensaje = idioma.contains("es")
                 ? (actualizado ? "Usuario actualizado correctamente" : "Error en BD")
@@ -96,10 +106,12 @@ public class CrudController {
         boolean eliminado = PersistenceUsuario.delete(id);
 
         if (eliminado) {
+            logger.info("[CrudController.eliminarUsuario] Usuario con ID {} eliminado correctamente.", id);
             return ResponseEntity.ok(
                     idioma.contains("es") ? "Usuario eliminado" : "User deleted"
             );
         } else {
+            logger.warn("[CrudController.eliminarUsuario] No se encontró el usuario con ID {} para eliminar.", id);
             return ResponseEntity.status(404).body(
                     idioma.contains("es") ? "Usuario no encontrado" : "User not found"
             );
@@ -111,6 +123,7 @@ public class CrudController {
     public String eliminarVista(@PathVariable long id) {
         boolean eliminado = PersistenceUsuario.delete(id);
         if (!eliminado) {
+            logger.error("[CrudController.eliminarVista] No se pudo eliminar el usuario con ID {} desde la vista.", id);
             return "error/500";
         }
         return "redirect:/crud";
@@ -122,6 +135,7 @@ public class CrudController {
         Usuario usuario = PersistenceUsuario.getUsuarioById(id);
 
         if (usuario == null) {
+            logger.warn("[CrudController.buscarUsuario] No se encontró usuario con ID {}.", id);
             return "error/500";
         }
 
