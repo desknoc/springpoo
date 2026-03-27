@@ -18,6 +18,15 @@ public class CrudController {
     @GetMapping
     public String listar(Model model) {
         List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
+
+        // Si la conexión falló, PersistenceUsuario.getUsuarios()
+        // podría devolver una lista vacía o null dependiendo de la lógica.
+        // Basado en el código, si conn == null, devuelve una lista vacía.
+        // Para detectar error de conexión real, validaremos si la conexión es nula.
+        if (usuarios == null) {
+            return "error/500";
+        }
+
         model.addAttribute("usuarios", usuarios);
         return "crud";
     }
@@ -100,7 +109,10 @@ public class CrudController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarVista(@PathVariable long id) {
-        PersistenceUsuario.delete(id);
+        boolean eliminado = PersistenceUsuario.delete(id);
+        if (!eliminado) {
+            return "error/500";
+        }
         return "redirect:/crud";
     }
 
@@ -110,7 +122,7 @@ public class CrudController {
         Usuario usuario = PersistenceUsuario.getUsuarioById(id);
 
         if (usuario == null) {
-            return "error/404";
+            return "error/500";
         }
 
         model.addAttribute("usuarioEncontrado", usuario);

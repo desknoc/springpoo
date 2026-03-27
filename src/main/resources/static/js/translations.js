@@ -147,7 +147,7 @@ const translations = {
         // === Errores ===
         "error.404.mensaje":            "Oops... the page you are looking for does not exist.",
         "error.404.volver":             "Back to home",
-        "error.500.h2":                 "Internal Server Error",
+        "error.500.h2":                 "Database Error Conection",
         "error.500.mensaje":            "Please try again later.",
         "error.500.volver":             "Back to Home",
     }

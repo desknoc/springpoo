@@ -61,8 +61,9 @@ public class PersistenceUsuario {
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
-            System.err.println("[PersistenceUsuario.getUsuarios] No se pudo obtener conexión a la BD.");
-            return lista;
+            // En lugar de devolver lista vacía, devolvemos null para que
+            // el CrudController sepa que debe ir a la página 500.
+            return null;
         }
 
         try (conn; PreparedStatement ps = conn.prepareStatement(sql);
