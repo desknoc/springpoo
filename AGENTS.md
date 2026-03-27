@@ -26,14 +26,16 @@ C:.
     ├───main
     │   ├───java
     │   │   └───com.sena.springpoo
-    │   │       ├───controller    # Manejo de peticiones HTTP y rutas.
-    │   │       ├───models        # Entidades de datos (POJOs).
-    │   │       └───persistence   # Lógica de conexión y consultas SQL.
+    │   │       ├───controller    # Controladores de API y Vistas
+    │   │       ├───models        # Entidades (Usuario, Comunicados, Formularios)
+    │   │       └───persistence   # Conexión JDBC y Consultas SQL
     │   └───resources
-    │       ├───templates         # Vistas HTML (Thymeleaf).
-    │       │   └───error         # Manejo de errores 404 y 500.
-    │       └───application.properties # Configuración del servidor.
-    └───test                      # Pruebas unitarias.
+    │       ├───static            # RECURSOS ESTÁTICOS
+    │       │   └───js            # Lógica de internacionalización (i18n.js, translations.js)
+    │       ├───templates         # Vistas dinámicas (Thymeleaf)
+    │       │   └───error         # Manejo de estados 404 y 500
+    │       └───application.properties
+    └───test                      # Pruebas de integración
 ```
 
 ---

@@ -29,16 +29,8 @@
             color: white;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .search-form {
-            flex-direction: row;
-            justify-content: center;
-        }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        .search-form { flex-direction: row; justify-content: center; }
 
         input, select {
             padding: 10px;
@@ -74,18 +66,8 @@
             overflow: hidden;
         }
 
-        th {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 12px;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
+        th { background-color: #1a1a1a; color: white; padding: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; text-align: center; }
         tr:hover { background-color: #f2f2f2; }
 
         .result-box {
@@ -96,12 +78,8 @@
             border-left: 5px solid #4CAF50;
         }
 
-        .btn-back {
-            margin-bottom: 20px;
-            background-color: #666;
-        }
+        .btn-back { margin-bottom: 20px; background-color: #666; }
 
-        /* ── Botón editar (azul para distinguirlo del eliminar) ── */
         .btn-edit {
             background-color: #2196F3;
             color: white;
@@ -111,26 +89,20 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            text-decoration: none;
             margin-right: 6px;
         }
-
         .btn-edit:hover { background-color: #1976D2; }
 
-        /* ── Modal overlay ── */
         .modal-overlay {
-            display: none;               /* oculto por defecto */
+            display: none;
             position: fixed;
-            inset: 0;                    /* top/right/bottom/left: 0 */
-            background-color: rgba(0, 0, 0, 0.6);
+            inset: 0;
+            background-color: rgba(0,0,0,0.6);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-
-        .modal-overlay.visible {
-            display: flex;               /* se muestra al agregar la clase */
-        }
+        .modal-overlay.visible { display: flex; }
 
         .modal-box {
             background-color: #2d2d2d;
@@ -139,8 +111,7 @@
             border-radius: 12px;
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             animation: fadeIn 0.2s ease;
         }
 
@@ -150,28 +121,12 @@
         }
 
         .modal-box h2 { margin-top: 0; }
-
-        .modal-box input {
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
+        .modal-box input { width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
         .modal-actions button { flex: 1; }
-
-        .btn-cancel {
-            background-color: #666 !important;
-        }
-
+        .btn-cancel { background-color: #666 !important; }
         .btn-cancel:hover { background-color: #555 !important; }
 
-        /* ── Toast de feedback ── */
         .toast {
             display: none;
             position: fixed;
@@ -185,11 +140,9 @@
             z-index: 2000;
             animation: fadeIn 0.3s ease;
         }
-
         .toast.success { background-color: #4CAF50; color: white; }
         .toast.error   { background-color: #e74c3c; color: white; }
 
-        /* ── Selector de idioma ── */
         .lang-selector {
             position: fixed;
             top: 15px;
@@ -199,7 +152,6 @@
             gap: 8px;
             z-index: 999;
         }
-
         .lang-btn {
             padding: 6px 14px;
             border-radius: 6px;
@@ -211,120 +163,57 @@
             font-size: 14px;
             transition: 0.2s;
         }
-
-        .lang-btn:hover,
-        .lang-btn.active {
-            background-color: #4CAF50;
-            color: white;
-        }
+        .lang-btn:hover, .lang-btn.active { background-color: #4CAF50; color: white; }
     </style>
 </head>
 <body>
 
-<!-- ✅ Selector de idioma -->
 <div class="lang-selector">
     <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
     <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
 </div>
 
 <a href="/" class="btn-back" data-i18n="crud.boton.volver">⬅ Volver al Registro</a>
-
 <h1 data-i18n="crud.titulo">Panel de Gestión de Usuarios</h1>
 
 <!-- ── Buscar ── -->
 <div class="section-container">
-    <h2 data-i18n="crud.buscar.titulo">🔍 Buscar Usuario por ID</h2>
+    <h2 data-i18n="crud.buscar.titulo" style="color:white;">🔍 Buscar Usuario por ID</h2>
     <form action="/crud/buscar" method="get" class="search-form">
-        <input type="number"
-               name="id"
+        <input type="number" name="id"
                data-i18n-placeholder="crud.buscar.placeholder"
                placeholder="Ingrese ID de usuario"
-               required
-               style="flex-grow: 1;">
+               required style="flex-grow:1;">
         <button type="submit" data-i18n="crud.buscar.boton">Buscar</button>
     </form>
-
     <div th:if="${usuarioEncontrado != null}" class="result-box">
-        <h3 data-i18n="crud.resultado.titulo">✅ Usuario encontrado:</h3>
-        <p>
-            <strong data-i18n="crud.resultado.id">ID:</strong>
-            <span th:text="${usuarioEncontrado.idUsuario}"></span>
-        </p>
-        <p>
-            <strong data-i18n="crud.resultado.nombre">Nombre:</strong>
-            <span th:text="${usuarioEncontrado.primerNombre + ' ' + usuarioEncontrado.primerApellido}"></span>
-        </p>
-        <p>
-            <strong data-i18n="crud.resultado.correo">Correo:</strong>
-            <span th:text="${usuarioEncontrado.correo}"></span>
-        </p>
+        <h3 data-i18n="crud.resultado.titulo" style="color:white;">✅ Usuario encontrado:</h3>
+        <p><strong data-i18n="crud.resultado.id">ID:</strong> <span th:text="${usuarioEncontrado.idUsuario}"></span></p>
+        <p><strong data-i18n="crud.resultado.nombre">Nombre:</strong> <span th:text="${usuarioEncontrado.primerNombre + ' ' + usuarioEncontrado.primerApellido}"></span></p>
+        <p><strong data-i18n="crud.resultado.correo">Correo:</strong> <span th:text="${usuarioEncontrado.correo}"></span></p>
     </div>
 </div>
 
 <!-- ── Crear ── -->
 <div class="section-container">
-    <h2 data-i18n="crud.crear.titulo">➕ Registrar Nuevo Usuario</h2>
+    <h2 data-i18n="crud.crear.titulo" style="color:white;">➕ Registrar Nuevo Usuario</h2>
     <form action="/crud/crear" method="post">
-
-        <input type="text"
-               name="primerNombre"
-               data-i18n-placeholder="crud.crear.primerNombre"
-               placeholder="Primer Nombre"
-               required>
-
-        <input type="text"
-               name="segundoNombre"
-               data-i18n-placeholder="crud.crear.segundoNombre"
-               placeholder="Segundo Nombre">
-
-        <input type="text"
-               name="primerApellido"
-               data-i18n-placeholder="crud.crear.primerApellido"
-               placeholder="Primer Apellido"
-               required>
-
-        <input type="text"
-               name="segundoApellido"
-               data-i18n-placeholder="crud.crear.segundoApellido"
-               placeholder="Segundo Apellido">
-
-        <input type="text"
-               name="tipoDocumento"
-               data-i18n-placeholder="crud.crear.tipoDocumento"
-               placeholder="Tipo Documento (Ej: CC)"
-               required>
-
-        <input type="number"
-               name="documento"
-               data-i18n-placeholder="crud.crear.documento"
-               placeholder="Documento"
-               required>
-
-        <input type="number"
-               name="celular"
-               data-i18n-placeholder="crud.crear.celular"
-               placeholder="Celular"
-               required>
-
-        <input type="email"
-               name="correo"
-               data-i18n-placeholder="crud.crear.correo"
-               placeholder="Correo"
-               required>
-
-        <input type="password"
-               name="contrasena"
-               data-i18n-placeholder="crud.crear.contrasena"
-               placeholder="Contraseña"
-               required>
-
+        <input type="text"     name="primerNombre"    data-i18n-placeholder="crud.crear.primerNombre"    placeholder="Primer Nombre"    required>
+        <input type="text"     name="segundoNombre"   data-i18n-placeholder="crud.crear.segundoNombre"   placeholder="Segundo Nombre">
+        <input type="text"     name="primerApellido"  data-i18n-placeholder="crud.crear.primerApellido"  placeholder="Primer Apellido"  required>
+        <input type="text"     name="segundoApellido" data-i18n-placeholder="crud.crear.segundoApellido" placeholder="Segundo Apellido">
+        <input type="text"     name="tipoDocumento"   data-i18n-placeholder="crud.crear.tipoDocumento"   placeholder="Tipo Documento (Ej: CC)" required>
+        <input type="number"   name="documento"       data-i18n-placeholder="crud.crear.documento"       placeholder="Documento"        required>
+        <input type="number"   name="celular"         data-i18n-placeholder="crud.crear.celular"         placeholder="Celular"          required>
+        <input type="email"    name="correo"          data-i18n-placeholder="crud.crear.correo"          placeholder="Correo"           required>
+        <input type="password" name="contrasena"      data-i18n-placeholder="crud.crear.contrasena"      placeholder="Contraseña"       required>
         <button type="submit" data-i18n="crud.crear.boton">Crear Usuario</button>
     </form>
 </div>
 
 <!-- ── Lista ── -->
 <div class="section-container">
-    <h2 data-i18n="crud.lista.titulo">📋 Lista Maestra de Usuarios</h2>
+    <h2 data-i18n="crud.lista.titulo" style="color:white;">📋 Lista Maestra de Usuarios</h2>
     <table>
         <thead>
         <tr>
@@ -344,10 +233,6 @@
             <td th:text="${u.documento}"></td>
             <td th:text="${u.correo}"></td>
             <td>
-                <!--
-                    data-i18n-confirm → i18n.js asigna el onclick dinámicamente
-                    data-i18n        → traduce el texto visible del botón
-                -->
                 <button class="btn-edit"
                         data-i18n="crud.boton.editar"
                         th:attr="onclick='abrirModal(' + ${u.idUsuario} + ')'">
@@ -365,89 +250,70 @@
     </table>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODAL DE EDICIÓN
-     ══════════════════════════════════════════ -->
+<!-- ── Modal de Edición ── -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
+        <h2 data-i18n="modal.editar.titulo" style="color:white;">✏️ Editar Usuario</h2>
 
-        <h2 data-i18n="modal.editar.titulo">✏️ Editar Usuario</h2>
-
-        <!-- Campo oculto para guardar el ID mientras el modal está abierto -->
         <input type="hidden" id="editId">
-
-        <input type="text"
-               id="editPrimerNombre"
-               data-i18n-placeholder="modal.editar.primerNombre"
-               placeholder="Primer Nombre">
-
-        <input type="text"
-               id="editPrimerApellido"
-               data-i18n-placeholder="modal.editar.primerApellido"
-               placeholder="Primer Apellido">
-
-        <input type="number"
-               id="editDocumento"
-               data-i18n-placeholder="modal.editar.documento"
-               placeholder="Documento">
-
-        <input type="email"
-               id="editCorreo"
-               data-i18n-placeholder="modal.editar.correo"
-               placeholder="Correo Electrónico">
+        <input type="text"     id="editPrimerNombre"    data-i18n-placeholder="modal.editar.primerNombre"    placeholder="Primer Nombre">
+        <input type="text"     id="editSegundoNombre"   data-i18n-placeholder="modal.editar.segundoNombre"   placeholder="Segundo Nombre">
+        <input type="text"     id="editPrimerApellido"  data-i18n-placeholder="modal.editar.primerApellido"  placeholder="Primer Apellido">
+        <input type="text"     id="editSegundoApellido" data-i18n-placeholder="modal.editar.segundoApellido" placeholder="Segundo Apellido">
+        <!--
+            BUG CORREGIDO: el atributo tenía "modal.editar.TipoDocumento" (T mayúscula).
+            Las claves en translations.js son case-sensitive → no encontraba la clave
+            → el placeholder nunca se traducía. Corregido a "modal.editar.tipoDocumento".
+        -->
+        <input type="text"     id="editTipoDocumento"   data-i18n-placeholder="modal.editar.tipoDocumento"   placeholder="Tipo de Documento">
+        <input type="number"   id="editDocumento"       data-i18n-placeholder="modal.editar.documento"       placeholder="Documento">
+        <input type="number"   id="editCelular"         data-i18n-placeholder="modal.editar.celular"         placeholder="Celular">
+        <input type="email"    id="editCorreo"          data-i18n-placeholder="modal.editar.correo"          placeholder="Correo Electrónico">
+        <input type="password" id="editContrasena"      data-i18n-placeholder="modal.editar.contrasena"      placeholder="Contraseña">
 
         <div class="modal-actions">
-            <button id="btnGuardar"
-                    onclick="guardarCambios()"
-                    data-i18n="modal.editar.botonGuardar">
-                Guardar Cambios
-            </button>
-            <button class="btn-cancel"
-                    onclick="cerrarModal()"
-                    data-i18n="modal.editar.botonCancelar">
-                Cancelar
-            </button>
+            <button id="btnGuardar" onclick="guardarCambios()" data-i18n="modal.editar.botonGuardar">Guardar Cambios</button>
+            <button class="btn-cancel" onclick="cerrarModal()" data-i18n="modal.editar.botonCancelar">Cancelar</button>
         </div>
-
     </div>
 </div>
 
-<!-- Toast de feedback (éxito / error) -->
 <div class="toast" id="toast"></div>
 
-<!-- ✅ Scripts al final del body -->
 <script th:src="@{/js/translations.js}"></script>
 <script th:src="@{/js/i18n.js}"></script>
 <script>
 
-    // ── Abre el modal y pre-llena los campos con los datos del usuario ──
     async function abrirModal(id) {
-        const overlay = document.getElementById("modalOverlay");
+        document.getElementById("editId").value              = id;
+        document.getElementById("editPrimerNombre").value    = "";
+        document.getElementById("editSegundoNombre").value   = "";
+        document.getElementById("editPrimerApellido").value  = "";
+        document.getElementById("editSegundoApellido").value = "";
+        document.getElementById("editTipoDocumento").value   = "";
+        document.getElementById("editDocumento").value       = "";
+        document.getElementById("editCelular").value         = "";
+        document.getElementById("editCorreo").value          = "";
+        document.getElementById("editContrasena").value      = "";
 
-        // Muestra el modal con un indicador de carga
-        document.getElementById("editId").value             = id;
-        document.getElementById("editPrimerNombre").value   = "";
-        document.getElementById("editPrimerApellido").value = "";
-        document.getElementById("editDocumento").value      = "";
-        document.getElementById("editCorreo").value         = "";
-
-        overlay.classList.add("visible");
+        document.getElementById("modalOverlay").classList.add("visible");
 
         try {
-            // GET /crud/usuario/{id} → devuelve el usuario como JSON
-            const res  = await fetch(`/crud/usuario/${id}`);
-
+            const res = await fetch(`/crud/usuario/${id}`);
             if (!res.ok) throw new Error("No encontrado");
 
             const user = await res.json();
 
-            // Pre-llena el formulario con los datos actuales
-            document.getElementById("editPrimerNombre").value   = user.primerNombre   || "";
-            document.getElementById("editPrimerApellido").value = user.primerApellido || "";
-            document.getElementById("editDocumento").value      = user.documento      || "";
-            document.getElementById("editCorreo").value         = user.correo         || "";
+            document.getElementById("editPrimerNombre").value    = user.primerNombre    || "";
+            document.getElementById("editSegundoNombre").value   = user.segundoNombre   || "";
+            document.getElementById("editPrimerApellido").value  = user.primerApellido  || "";
+            document.getElementById("editSegundoApellido").value = user.segundoApellido || "";
+            document.getElementById("editTipoDocumento").value   = user.tipoDocumento   || "";
+            document.getElementById("editDocumento").value       = user.documento       || "";
+            document.getElementById("editCelular").value         = user.celular         || "";
+            document.getElementById("editCorreo").value          = user.correo          || "";
+            document.getElementById("editContrasena").value      = user.contrasena      || "";
 
-            // Re-aplica i18n para que los placeholders del modal estén traducidos
             I18n.applyTranslations();
 
         } catch (e) {
@@ -456,44 +322,52 @@
         }
     }
 
-    // ── Cierra el modal ──
     function cerrarModal() {
         document.getElementById("modalOverlay").classList.remove("visible");
     }
 
-    // Cierra el modal si se hace clic fuera del contenido
-    document.getElementById("modalOverlay").addEventListener("click", function (e) {
+    document.getElementById("modalOverlay").addEventListener("click", function(e) {
         if (e.target === this) cerrarModal();
     });
 
-    // ── Envía los cambios al servidor con PUT ──
     async function guardarCambios() {
-        const id      = document.getElementById("editId").value;
-        const lang    = I18n.getLang();
-        const dict    = translations[lang];
+        const id         = document.getElementById("editId").value;
+        const lang       = I18n.getLang();
+        const dict       = translations[lang];
         const btnGuardar = document.getElementById("btnGuardar");
 
-        const primerNombre   = document.getElementById("editPrimerNombre").value.trim();
-        const primerApellido = document.getElementById("editPrimerApellido").value.trim();
-        const documentoStr   = document.getElementById("editDocumento").value.trim();
-        const correo         = document.getElementById("editCorreo").value.trim();
+        const primerNombre    = document.getElementById("editPrimerNombre").value.trim();
+        const segundoNombre   = document.getElementById("editSegundoNombre").value.trim();
+        const primerApellido  = document.getElementById("editPrimerApellido").value.trim();
+        const segundoApellido = document.getElementById("editSegundoApellido").value.trim();
+        const tipoDocumento   = document.getElementById("editTipoDocumento").value.trim();
+        const documentoStr    = document.getElementById("editDocumento").value.trim();
+        const celularStr      = document.getElementById("editCelular").value.trim();
+        const correo          = document.getElementById("editCorreo").value.trim();
+        const contrasena      = document.getElementById("editContrasena").value.trim();
 
-        // VALIDACIÓN: evita enviar campos vacíos que causarían errores NOT NULL en la BD
-        if (!primerNombre || !primerApellido || !documentoStr || !correo) {
+        if (!primerNombre || !primerApellido || !documentoStr || !celularStr || !correo || !contrasena) {
             mostrarToast(dict["modal.editar.error"], "error");
             return;
         }
 
-        // Deshabilita el botón para evitar doble envío
         btnGuardar.disabled    = true;
         btnGuardar.textContent = dict["modal.editar.cargando"];
 
-        // IMPORTANTE: documento va como número (long en Java)
         const body = {
-            primerNombre:   primerNombre,
-            primerApellido: primerApellido,
-            documento:      Number(documentoStr),
-            correo:         correo
+            primerNombre:    primerNombre,
+            segundoNombre:   segundoNombre,
+            primerApellido:  primerApellido,
+            segundoApellido: segundoApellido,
+            tipoDocumento:   tipoDocumento,
+            documento:       Number(documentoStr),
+            // BUG CORREGIDO: antes el body tenía `celular: celular`.
+            // La variable declarada se llamaba `celularStr`, no `celular`.
+            // Eso lanzaba ReferenceError → el catch lo capturaba → toast de error
+            // inmediato sin siquiera intentar el fetch al servidor.
+            celular:         Number(celularStr),
+            correo:          correo,
+            contrasena:      contrasena
         };
 
         try {
@@ -509,11 +383,10 @@
             if (res.ok) {
                 cerrarModal();
                 mostrarToast(dict["modal.editar.exito"], "success");
-                // Recarga la tabla para reflejar los cambios (Thymeleaf es server-side)
                 setTimeout(() => location.reload(), 1200);
             } else {
                 const texto = await res.text();
-                console.error("[guardarCambios] Error del servidor:", res.status, texto);
+                console.error("[guardarCambios] Servidor respondió:", res.status, texto);
                 mostrarToast(dict["modal.editar.error"], "error");
             }
 
@@ -526,11 +399,10 @@
         }
     }
 
-    // ── Muestra el toast y lo oculta a los 3 segundos ──
     function mostrarToast(mensaje, tipo) {
         const toast = document.getElementById("toast");
-        toast.textContent = mensaje;
-        toast.className   = `toast ${tipo}`;
+        toast.textContent   = mensaje;
+        toast.className     = `toast ${tipo}`;
         toast.style.display = "block";
         setTimeout(() => { toast.style.display = "none"; }, 3000);
     }

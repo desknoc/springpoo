@@ -22,10 +22,6 @@ public class PersistenceUsuario {
                 "rol, fecha_registro, ultima_actualizacion) " +
                 "VALUES (?,?,?,?,?,?,?,?,?, 'ADMIN', NOW(), NOW())";
 
-        // BUG CORREGIDO: getConnection() puede retornar null si falla la conexión.
-        // Si conn es null y se usa en try-with-resources, conn.prepareStatement()
-        // lanza NullPointerException (no es SQLException), que no sería capturado
-        // y Spring devolvería un 500 silencioso. La verificación explícita evita eso.
         Connection conn = Conexion.getConnection();
         if (conn == null) {
             System.err.println("[PersistenceUsuario.save] No se pudo obtener conexión a la BD.");
@@ -39,17 +35,12 @@ public class PersistenceUsuario {
             ps.setString(3, usuario.getPrimerApellido());
             ps.setString(4, usuario.getSegundoApellido());
             ps.setString(5, usuario.getTipoDocumento());
-            ps.setLong(6, usuario.getDocumento());
-
-            // BUG CORREGIDO: celular es varchar(20) en la DB, no bigint.
-            // ps.setLong() en un varchar puede fallar en MySQL con modo estricto
-            // (STRICT_TRANS_TABLES). Se convierte a String explícitamente.
+            ps.setLong(6,   usuario.getDocumento());
+            // celular es varchar(20) en la BD → se convierte a String
             ps.setString(7, String.valueOf(usuario.getCelular()));
-
             ps.setString(8, usuario.getCorreo());
             ps.setString(9, usuario.getContrasena());
 
-            // Verifica que realmente se insertó 1 fila
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -83,7 +74,6 @@ public class PersistenceUsuario {
                 u.setPrimerNombre(rs.getString("primer_nombre"));
                 u.setPrimerApellido(rs.getString("primer_apellido"));
                 u.setDocumento(rs.getLong("documento"));
-                // correo_electronico en DB → campo correo en el modelo
                 u.setCorreo(rs.getString("correo_electronico"));
                 lista.add(u);
             }
@@ -123,10 +113,12 @@ public class PersistenceUsuario {
                     u.setSegundoApellido(rs.getString("segundo_apellido"));
                     u.setTipoDocumento(rs.getString("tipo_documento"));
                     u.setDocumento(rs.getLong("documento"));
-                    // correo_electronico en DB → campo correo en el modelo
-                    // CRÍTICO: Jackson serializa este campo como "correo" (por getCorreo()),
-                    // y el JS del modal lo lee como user.correo. Debe coincidir.
+                    // BUG CORREGIDO: antes no se cargaba celular ni contrasena del ResultSet,
+                    // por eso el modal los recibía vacíos (0 y null), la validación JS
+                    // los marcaba como campos vacíos y cortaba el fetch antes de enviarlo.
+                    u.setCelular(Long.parseLong(rs.getString("celular")));
                     u.setCorreo(rs.getString("correo_electronico"));
+                    u.setContrasena(rs.getString("contrasena"));
                     return u;
                 }
             }
@@ -144,15 +136,19 @@ public class PersistenceUsuario {
     // ══════════════════════════════════════════════════════════════
     public static boolean update(Usuario usuario) {
 
-        // Los 5 parámetros deben ir en este orden exacto para coincidir
-        // con los 5 signos ? del SQL: nombre, apellido, documento, correo, id (WHERE)
+        // 9 campos SET + 1 WHERE = 10 signos ? en total
         String sql = "UPDATE usuario " +
-                "SET primer_nombre = ?, " +
-                "    primer_apellido = ?, " +
-                "    documento = ?, " +
-                "    correo_electronico = ?, " +
+                "SET primer_nombre        = ?, " +   // 1
+                "    segundo_nombre       = ?, " +   // 2
+                "    primer_apellido      = ?, " +   // 3
+                "    segundo_apellido     = ?, " +   // 4
+                "    tipo_documento       = ?, " +   // 5
+                "    documento            = ?, " +   // 6
+                "    celular              = ?, " +   // 7
+                "    correo_electronico   = ?, " +   // 8
+                "    contrasena           = ?, " +   // 9
                 "    ultima_actualizacion = NOW() " +
-                "WHERE id_usuario = ?";
+                "WHERE id_usuario = ?";              // 10
 
         Connection conn = Conexion.getConnection();
         if (conn == null) {
@@ -162,20 +158,35 @@ public class PersistenceUsuario {
 
         try (conn; PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, usuario.getPrimerNombre());   // primer_nombre
-            ps.setString(2, usuario.getPrimerApellido()); // primer_apellido
-            ps.setLong(3,   usuario.getDocumento());      // documento
-            ps.setString(4, usuario.getCorreo());         // correo_electronico
-            ps.setLong(5,   usuario.getIdUsuario());      // WHERE id_usuario = ?
+            ps.setString(1,  usuario.getPrimerNombre());
+            ps.setString(2,  usuario.getSegundoNombre());
+            ps.setString(3,  usuario.getPrimerApellido());
+            ps.setString(4,  usuario.getSegundoApellido());
+            ps.setString(5,  usuario.getTipoDocumento());
+            ps.setLong(6,    usuario.getDocumento());
+            // celular es varchar(20) en la BD → se convierte a String
+            ps.setString(7,  String.valueOf(usuario.getCelular()));
+            ps.setString(8,  usuario.getCorreo());
+            ps.setString(9,  usuario.getContrasena());
+            // ══════════════════════════════════════════════════════
+            // BUG RAÍZ CORREGIDO:
+            // El código anterior tenía:
+            //   ps.setString(9, contrasena)   ← índice 9
+            //   ps.setLong(9,   idUsuario)     ← índice 9 OTRA VEZ → pisaba la contraseña
+            //
+            // JDBC asigna los ? en orden secuencial (1, 2, 3...).
+            // Al duplicar el índice 9, el ? número 10 (el WHERE) nunca recibía valor
+            // → PreparedStatement enviaba un parámetro nulo al WHERE
+            // → MySQL no encontraba ninguna fila → executeUpdate() retornaba 0
+            // → el método retornaba false → el controller respondía 404
+            // → el JS mostraba "No se pudo actualizar" sin haber ejecutado nada.
+            // ══════════════════════════════════════════════════════
+            ps.setLong(10,   usuario.getIdUsuario());   // WHERE id_usuario = ?
 
             int filasAfectadas = ps.executeUpdate();
-
             System.out.println("[PersistenceUsuario.update] id=" + usuario.getIdUsuario()
                     + " | filas afectadas=" + filasAfectadas);
 
-            // BUG CORREGIDO: el código original ignoraba el resultado de executeUpdate()
-            // y siempre retornaba true. Si el id no existe, 0 filas se actualizan
-            // pero el método seguía retornando true, haciendo creer que funcionó.
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
@@ -204,8 +215,6 @@ public class PersistenceUsuario {
             ps.setLong(1, id);
 
             int filasAfectadas = ps.executeUpdate();
-
-            // BUG CORREGIDO: igual que update, el original siempre retornaba true
             return filasAfectadas > 0;
 
         } catch (SQLException e) {

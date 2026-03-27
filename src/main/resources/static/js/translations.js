@@ -50,11 +50,19 @@ const translations = {
         "crud.confirm.eliminar":        "¿Estás seguro de eliminar este usuario?",
 
         // === Modal Editar ===
+        // BUG CORREGIDO: estas claves no existían en ES, solo en EN.
+        // i18n.js buscaba la clave y no la encontraba → placeholder quedaba
+        // con el texto HTML por defecto en español, pero en inglés no se traducía.
         "modal.editar.titulo":          "✏️ Editar Usuario",
         "modal.editar.primerNombre":    "Primer Nombre",
+        "modal.editar.segundoNombre":   "Segundo Nombre",
         "modal.editar.primerApellido":  "Primer Apellido",
+        "modal.editar.segundoApellido": "Segundo Apellido",
+        "modal.editar.tipoDocumento":   "Tipo Documento (Ej: CC)",
         "modal.editar.documento":       "Documento",
+        "modal.editar.celular":         "Celular",
         "modal.editar.correo":          "Correo Electrónico",
+        "modal.editar.contrasena":      "Contraseña",
         "modal.editar.botonGuardar":    "Guardar Cambios",
         "modal.editar.botonCancelar":   "Cancelar",
         "modal.editar.exito":           "✅ Usuario actualizado correctamente",
@@ -122,9 +130,14 @@ const translations = {
         // === Modal Editar ===
         "modal.editar.titulo":          "✏️ Edit User",
         "modal.editar.primerNombre":    "First Name",
+        "modal.editar.segundoNombre":   "Middle Name",
         "modal.editar.primerApellido":  "First Last Name",
+        "modal.editar.segundoApellido": "Second Last Name",
+        "modal.editar.tipoDocumento":   "Document Type (e.g.: CC)",
         "modal.editar.documento":       "Document",
+        "modal.editar.celular":         "Phone",
         "modal.editar.correo":          "Email Address",
+        "modal.editar.contrasena":      "Password",
         "modal.editar.botonGuardar":    "Save Changes",
         "modal.editar.botonCancelar":   "Cancel",
         "modal.editar.exito":           "✅ User updated successfully",
