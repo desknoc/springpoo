@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-i18n-title="registro.titulo">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Usuarios</title>
+    <title>Registrarse</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff; /* Fondo blanco para el background */
+            background-color: #ffffff;
             color: #333;
             text-align: center;
             padding-top: 50px;
             margin: 0;
         }
 
-        /* Estructura del formulario en gris oscuro */
         form {
-            background-color: #2d2d2d; /* Gris oscuro */
+            background-color: #2d2d2d;
             display: inline-flex;
             flex-direction: column;
             align-items: center;
@@ -25,18 +24,14 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        h1 {
-            color: #2d2d2d;
-            margin-bottom: 25px;
-        }
+        h1 { color: #2d2d2d; margin-bottom: 25px; }
 
-        /* Campos de entrada en blanco */
         input, select {
             margin: 10px 0;
             padding: 12px;
             border-radius: 6px;
             border: 1px solid #ccc;
-            background-color: #ffffff; /* Blanco para los campos */
+            background-color: #ffffff;
             color: #333;
             width: 100%;
             box-sizing: border-box;
@@ -45,13 +40,12 @@
         }
 
         input:focus, select:focus {
-            border-color: #4CAF50; /* Resalte verde al escribir */
+            border-color: #4CAF50;
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
         }
 
-        /* Botón de registro en verde */
         input[type="submit"] {
-            background-color: #4CAF50; /* Verde */
+            background-color: #4CAF50;
             color: white;
             cursor: pointer;
             border: none;
@@ -61,16 +55,13 @@
             transition: background 0.3s ease;
         }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
+        input[type="submit"]:hover { background-color: #45a049; }
 
-        /* Botón de navegación al CRUD en verde */
         .btn-crud {
             display: inline-block;
             margin-top: 25px;
             padding: 12px 24px;
-            background-color: #4CAF50; /* Verde */
+            background-color: #4CAF50;
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -78,38 +69,118 @@
             transition: background 0.3s ease;
         }
 
-        .btn-crud:hover {
-            background-color: #45a049;
+        .btn-crud:hover { background-color: #45a049; }
+
+        /* ── Selector de idioma ── */
+        .lang-selector {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 2px solid #4CAF50;
+            background-color: white;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-<h1>Registrarse</h1>
+<!-- ✅ Selector de idioma (esquina superior derecha) -->
+<div class="lang-selector">
+    <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
+    <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
+</div>
+
+<h1 data-i18n="registro.titulo">Registrarse</h1>
 
 <form action="/guardarUsuario" method="post">
-    <input type="text" name="primerNombre" placeholder="Primer Nombre" required>
-    <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
-    <input type="text" name="primerApellido" placeholder="Primer Apellido" required>
-    <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
+
+    <input type="text"
+           name="primerNombre"
+           data-i18n-placeholder="registro.primerNombre"
+           placeholder="Primer Nombre"
+           required>
+
+    <input type="text"
+           name="segundoNombre"
+           data-i18n-placeholder="registro.segundoNombre"
+           placeholder="Segundo Nombre">
+
+    <input type="text"
+           name="primerApellido"
+           data-i18n-placeholder="registro.primerApellido"
+           placeholder="Primer Apellido"
+           required>
+
+    <input type="text"
+           name="segundoApellido"
+           data-i18n-placeholder="registro.segundoApellido"
+           placeholder="Segundo Apellido">
 
     <select name="tipoDocumento" required>
-        <option value="" disabled selected>Tipo de Documento</option>
-        <option value="CC">Cédula de Ciudadanía</option>
-        <option value="TI">Tarjeta de Identidad</option>
-        <option value="CE">Cédula de Extranjería</option>
+        <option value="" disabled selected data-i18n="registro.tipoDocumento">Tipo de Documento</option>
+        <option value="CC" data-i18n="registro.tipoDoc.cc">Cédula de Ciudadanía</option>
+        <option value="TI" data-i18n="registro.tipoDoc.ti">Tarjeta de Identidad</option>
+        <option value="CE" data-i18n="registro.tipoDoc.ce">Cédula de Extranjería</option>
     </select>
 
-    <input type="number" name="documento" placeholder="Número de Documento" required>
-    <input type="number" name="celular" placeholder="Teléfono Celular" required>
-    <input type="email" name="correo" placeholder="Correo Electrónico" required>
-    <input type="password" name="contrasena" placeholder="Contraseña" required>
+    <input type="number"
+           name="documento"
+           data-i18n-placeholder="registro.documento"
+           placeholder="Número de Documento"
+           required>
 
-    <input type="submit" value="Registrarse">
+    <input type="number"
+           name="celular"
+           data-i18n-placeholder="registro.celular"
+           placeholder="Teléfono Celular"
+           required>
+
+    <input type="email"
+           name="correo"
+           data-i18n-placeholder="registro.correo"
+           placeholder="Correo Electrónico"
+           required>
+
+    <input type="password"
+           name="contrasena"
+           data-i18n-placeholder="registro.contrasena"
+           placeholder="Contraseña"
+           required>
+
+    <!-- data-i18n-value para traducir el value del submit -->
+    <input type="submit"
+           data-i18n-value="registro.boton"
+           value="Registrarse">
+
 </form>
 
 <br>
-<a href="/crud" class="btn-crud">Ir a Gestión de Usuarios (CRUD)</a>
+<a href="/crud" class="btn-crud" data-i18n="registro.irCrud">
+    Ir a Gestión de Usuarios (CRUD)
+</a>
+
+<!-- ✅ Cargar scripts al final del body -->
+<script th:src="@{/js/translations.js}"></script>
+<script th:src="@{/js/i18n.js}"></script>
 
 </body>
 </html>

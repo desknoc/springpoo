@@ -15,23 +15,60 @@ public class CrudController {
 
 
     @GetMapping
-    public String listar(Model model){
-
+    public String listar(Model model) {
         List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
         model.addAttribute("usuarios", usuarios);
-
         return "crud";
     }
 
 
     @PostMapping("/crear")
-    public String crearUsuario(@ModelAttribute Usuario usuario){
+    public String crearUsuario(@ModelAttribute Usuario usuario) {
         boolean creado = PersistenceUsuario.save(usuario);
-        if(!creado){
-            // Esto buscará templates/error/500.html automáticamente
+        if (!creado) {
             return "error/500";
         }
         return "redirect:/crud";
+    }
+
+
+    // ── Devuelve un usuario como JSON para pre-llenar el modal de edición ──
+    @GetMapping("/usuario/{id}")
+    @ResponseBody
+    public ResponseEntity<Usuario> obtenerUsuario(
+            @PathVariable long id
+    ) {
+        Usuario usuario = PersistenceUsuario.getUsuarioById(id);
+
+        if (usuario == null) {
+            return ResponseEntity.notFound().build(); // 404
+        }
+
+        return ResponseEntity.ok(usuario); // 200 + JSON
+    }
+
+
+    // ── Actualiza el usuario recibido como JSON en el body ──
+    @PutMapping("/actualizar/{id}")
+    @ResponseBody
+    public ResponseEntity<String> actualizarUsuario(
+            @PathVariable long id,
+            @RequestBody Usuario usuario,
+            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
+    ) {
+        usuario.setIdUsuario(id);
+
+        boolean actualizado = PersistenceUsuario.update(usuario);
+
+        if (actualizado) {
+            return ResponseEntity.ok(
+                    idioma.contains("es") ? "Usuario actualizado" : "User updated"
+            );
+        } else {
+            return ResponseEntity.status(404).body(
+                    idioma.contains("es") ? "Usuario no encontrado" : "User not found"
+            );
+        }
     }
 
 
@@ -40,60 +77,33 @@ public class CrudController {
     public ResponseEntity<String> eliminarUsuario(
             @PathVariable long id,
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
-    ){
-
+    ) {
         boolean eliminado = PersistenceUsuario.delete(id);
 
-        if(eliminado){
+        if (eliminado) {
             return ResponseEntity.ok(
                     idioma.contains("es") ? "Usuario eliminado" : "User deleted"
             );
-        }else{
+        } else {
             return ResponseEntity.status(404).body(
                     idioma.contains("es") ? "Usuario no encontrado" : "User not found"
             );
         }
     }
 
+
     @GetMapping("/eliminar/{id}")
-    public String eliminarVista(@PathVariable long id){
-
+    public String eliminarVista(@PathVariable long id) {
         PersistenceUsuario.delete(id);
-
         return "redirect:/crud";
     }
 
 
-    @PutMapping("/actualizar/{id}")
-    @ResponseBody
-    public ResponseEntity<String> actualizarUsuario(
-            @PathVariable long id,
-            @RequestBody Usuario usuario,
-            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
-    ){
-
-        usuario.setIdUsuario(id);
-
-        boolean actualizado = PersistenceUsuario.update(usuario);
-
-        if(actualizado){
-            return ResponseEntity.ok(
-                    idioma.contains("es") ? "Usuario actualizado" : "User updated"
-            );
-        }else{
-            return ResponseEntity.status(404).body(
-                    idioma.contains("es") ? "Usuario no encontrado" : "User not found"
-            );
-        }
-    }
-
-
     @GetMapping("/buscar")
-    public String buscarUsuario(@RequestParam long id, Model model){
-
+    public String buscarUsuario(@RequestParam long id, Model model) {
         Usuario usuario = PersistenceUsuario.getUsuarioById(id);
 
-        if(usuario == null){
+        if (usuario == null) {
             return "error/404";
         }
 

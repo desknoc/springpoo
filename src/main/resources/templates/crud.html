@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" data-i18n-title="crud.titulo">
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Usuarios - CRUD</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #ffffff; /* Fondo blanco pedido */
+            background-color: #ffffff;
             color: #333;
             margin: 0;
             padding: 20px;
@@ -18,9 +18,8 @@
         h1 { color: #2d2d2d; margin-bottom: 30px; }
         h2 { color: #2d2d2d; margin-top: 20px; font-size: 1.2rem; }
 
-        /* Contenedores Gris Oscuro */
         .section-container {
-            background-color: #2d2d2d; /* Gris oscuro pedido */
+            background-color: #2d2d2d;
             padding: 25px;
             border-radius: 12px;
             width: 100%;
@@ -30,7 +29,6 @@
             color: white;
         }
 
-        /* Formularios en Flex (uno sobre otro) */
         form {
             display: flex;
             flex-direction: column;
@@ -38,23 +36,21 @@
         }
 
         .search-form {
-            flex-direction: row; /* Buscador en una línea */
+            flex-direction: row;
             justify-content: center;
         }
 
-        /* Campos Blancos */
         input, select {
             padding: 10px;
             border-radius: 6px;
             border: 1px solid #ccc;
-            background-color: #ffffff; /* Campos blancos pedido */
+            background-color: #ffffff;
             color: #333;
             outline: none;
         }
 
-        /* Botones Verdes */
         button, .btn-delete, .btn-back {
-            background-color: #4CAF50; /* Verde pedido */
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -66,11 +62,8 @@
             text-align: center;
         }
 
-        button:hover, .btn-delete:hover, .btn-back:hover {
-            background-color: #45a049;
-        }
+        button:hover, .btn-delete:hover, .btn-back:hover { background-color: #45a049; }
 
-        /* Estilos de la Tabla */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -95,7 +88,6 @@
 
         tr:hover { background-color: #f2f2f2; }
 
-        /* Resultado de búsqueda */
         .result-box {
             background-color: #3d3d3d;
             padding: 15px;
@@ -106,58 +98,242 @@
 
         .btn-back {
             margin-bottom: 20px;
-            background-color: #666; /* Gris para volver */
+            background-color: #666;
+        }
+
+        /* ── Botón editar (azul para distinguirlo del eliminar) ── */
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            margin-right: 6px;
+        }
+
+        .btn-edit:hover { background-color: #1976D2; }
+
+        /* ── Modal overlay ── */
+        .modal-overlay {
+            display: none;               /* oculto por defecto */
+            position: fixed;
+            inset: 0;                    /* top/right/bottom/left: 0 */
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;               /* se muestra al agregar la clase */
+        }
+
+        .modal-box {
+            background-color: #2d2d2d;
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-box h2 { margin-top: 0; }
+
+        .modal-box input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-actions button { flex: 1; }
+
+        .btn-cancel {
+            background-color: #666 !important;
+        }
+
+        .btn-cancel:hover { background-color: #555 !important; }
+
+        /* ── Toast de feedback ── */
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .toast.success { background-color: #4CAF50; color: white; }
+        .toast.error   { background-color: #e74c3c; color: white; }
+
+        /* ── Selector de idioma ── */
+        .lang-selector {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 2px solid #4CAF50;
+            background-color: white;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-<a href="/" class="btn-back">⬅ Volver al Registro</a>
+<!-- ✅ Selector de idioma -->
+<div class="lang-selector">
+    <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
+    <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
+</div>
 
-<h1>Panel de Gestión de Usuarios</h1>
+<a href="/" class="btn-back" data-i18n="crud.boton.volver">⬅ Volver al Registro</a>
 
+<h1 data-i18n="crud.titulo">Panel de Gestión de Usuarios</h1>
+
+<!-- ── Buscar ── -->
 <div class="section-container">
-    <h2>🔍 Buscar Usuario por ID</h2>
+    <h2 data-i18n="crud.buscar.titulo">🔍 Buscar Usuario por ID</h2>
     <form action="/crud/buscar" method="get" class="search-form">
-        <input type="number" name="id" placeholder="Ingrese ID de usuario" required style="flex-grow: 1;">
-        <button type="submit">Buscar</button>
+        <input type="number"
+               name="id"
+               data-i18n-placeholder="crud.buscar.placeholder"
+               placeholder="Ingrese ID de usuario"
+               required
+               style="flex-grow: 1;">
+        <button type="submit" data-i18n="crud.buscar.boton">Buscar</button>
     </form>
 
     <div th:if="${usuarioEncontrado != null}" class="result-box">
-        <h3>✅ Usuario encontrado:</h3>
-        <p><strong>ID:</strong> <span th:text="${usuarioEncontrado.idUsuario}"></span></p>
-        <p><strong>Nombre:</strong> <span th:text="${usuarioEncontrado.primerNombre + ' ' + usuarioEncontrado.primerApellido}"></span></p>
-        <p><strong>Correo:</strong> <span th:text="${usuarioEncontrado.correo}"></span></p>
+        <h3 data-i18n="crud.resultado.titulo">✅ Usuario encontrado:</h3>
+        <p>
+            <strong data-i18n="crud.resultado.id">ID:</strong>
+            <span th:text="${usuarioEncontrado.idUsuario}"></span>
+        </p>
+        <p>
+            <strong data-i18n="crud.resultado.nombre">Nombre:</strong>
+            <span th:text="${usuarioEncontrado.primerNombre + ' ' + usuarioEncontrado.primerApellido}"></span>
+        </p>
+        <p>
+            <strong data-i18n="crud.resultado.correo">Correo:</strong>
+            <span th:text="${usuarioEncontrado.correo}"></span>
+        </p>
     </div>
 </div>
 
+<!-- ── Crear ── -->
 <div class="section-container">
-    <h2>➕ Registrar Nuevo Usuario</h2>
+    <h2 data-i18n="crud.crear.titulo">➕ Registrar Nuevo Usuario</h2>
     <form action="/crud/crear" method="post">
-        <input type="text" name="primerNombre" placeholder="Primer Nombre" required>
-        <input type="text" name="segundoNombre" placeholder="Segundo Nombre">
-        <input type="text" name="primerApellido" placeholder="Primer Apellido" required>
-        <input type="text" name="segundoApellido" placeholder="Segundo Apellido">
-        <input type="text" name="tipoDocumento" placeholder="Tipo Documento (Ej: CC)" required>
-        <input type="number" name="documento" placeholder="Documento" required>
-        <input type="number" name="celular" placeholder="Celular" required>
-        <input type="email" name="correo" placeholder="Correo" required>
-        <input type="password" name="contrasena" placeholder="Contraseña" required>
-        <button type="submit">Crear Usuario</button>
+
+        <input type="text"
+               name="primerNombre"
+               data-i18n-placeholder="crud.crear.primerNombre"
+               placeholder="Primer Nombre"
+               required>
+
+        <input type="text"
+               name="segundoNombre"
+               data-i18n-placeholder="crud.crear.segundoNombre"
+               placeholder="Segundo Nombre">
+
+        <input type="text"
+               name="primerApellido"
+               data-i18n-placeholder="crud.crear.primerApellido"
+               placeholder="Primer Apellido"
+               required>
+
+        <input type="text"
+               name="segundoApellido"
+               data-i18n-placeholder="crud.crear.segundoApellido"
+               placeholder="Segundo Apellido">
+
+        <input type="text"
+               name="tipoDocumento"
+               data-i18n-placeholder="crud.crear.tipoDocumento"
+               placeholder="Tipo Documento (Ej: CC)"
+               required>
+
+        <input type="number"
+               name="documento"
+               data-i18n-placeholder="crud.crear.documento"
+               placeholder="Documento"
+               required>
+
+        <input type="number"
+               name="celular"
+               data-i18n-placeholder="crud.crear.celular"
+               placeholder="Celular"
+               required>
+
+        <input type="email"
+               name="correo"
+               data-i18n-placeholder="crud.crear.correo"
+               placeholder="Correo"
+               required>
+
+        <input type="password"
+               name="contrasena"
+               data-i18n-placeholder="crud.crear.contrasena"
+               placeholder="Contraseña"
+               required>
+
+        <button type="submit" data-i18n="crud.crear.boton">Crear Usuario</button>
     </form>
 </div>
 
+<!-- ── Lista ── -->
 <div class="section-container">
-    <h2>📋 Lista Maestra de Usuarios</h2>
+    <h2 data-i18n="crud.lista.titulo">📋 Lista Maestra de Usuarios</h2>
     <table>
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Documento</th>
-            <th>Correo</th>
-            <th>Acciones</th>
+            <th data-i18n="crud.tabla.id">ID</th>
+            <th data-i18n="crud.tabla.nombre">Nombre</th>
+            <th data-i18n="crud.tabla.apellido">Apellido</th>
+            <th data-i18n="crud.tabla.documento">Documento</th>
+            <th data-i18n="crud.tabla.correo">Correo</th>
+            <th data-i18n="crud.tabla.acciones">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -168,8 +344,19 @@
             <td th:text="${u.documento}"></td>
             <td th:text="${u.correo}"></td>
             <td>
-                <a th:href="@{/crud/eliminar/{id}(id=${u.idUsuario})}" class="btn-delete"
-                   onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                <!--
+                    data-i18n-confirm → i18n.js asigna el onclick dinámicamente
+                    data-i18n        → traduce el texto visible del botón
+                -->
+                <button class="btn-edit"
+                        data-i18n="crud.boton.editar"
+                        th:attr="onclick='abrirModal(' + ${u.idUsuario} + ')'">
+                    Editar
+                </button>
+                <a th:href="@{/crud/eliminar/{id}(id=${u.idUsuario})}"
+                   class="btn-delete"
+                   data-i18n="crud.boton.eliminar"
+                   data-i18n-confirm="crud.confirm.eliminar">
                     Eliminar
                 </a>
             </td>
@@ -177,6 +364,178 @@
         </tbody>
     </table>
 </div>
+
+<!-- ══════════════════════════════════════════
+     MODAL DE EDICIÓN
+     ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+
+        <h2 data-i18n="modal.editar.titulo">✏️ Editar Usuario</h2>
+
+        <!-- Campo oculto para guardar el ID mientras el modal está abierto -->
+        <input type="hidden" id="editId">
+
+        <input type="text"
+               id="editPrimerNombre"
+               data-i18n-placeholder="modal.editar.primerNombre"
+               placeholder="Primer Nombre">
+
+        <input type="text"
+               id="editPrimerApellido"
+               data-i18n-placeholder="modal.editar.primerApellido"
+               placeholder="Primer Apellido">
+
+        <input type="number"
+               id="editDocumento"
+               data-i18n-placeholder="modal.editar.documento"
+               placeholder="Documento">
+
+        <input type="email"
+               id="editCorreo"
+               data-i18n-placeholder="modal.editar.correo"
+               placeholder="Correo Electrónico">
+
+        <div class="modal-actions">
+            <button id="btnGuardar"
+                    onclick="guardarCambios()"
+                    data-i18n="modal.editar.botonGuardar">
+                Guardar Cambios
+            </button>
+            <button class="btn-cancel"
+                    onclick="cerrarModal()"
+                    data-i18n="modal.editar.botonCancelar">
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast de feedback (éxito / error) -->
+<div class="toast" id="toast"></div>
+
+<!-- ✅ Scripts al final del body -->
+<script th:src="@{/js/translations.js}"></script>
+<script th:src="@{/js/i18n.js}"></script>
+<script>
+
+    // ── Abre el modal y pre-llena los campos con los datos del usuario ──
+    async function abrirModal(id) {
+        const overlay = document.getElementById("modalOverlay");
+
+        // Muestra el modal con un indicador de carga
+        document.getElementById("editId").value             = id;
+        document.getElementById("editPrimerNombre").value   = "";
+        document.getElementById("editPrimerApellido").value = "";
+        document.getElementById("editDocumento").value      = "";
+        document.getElementById("editCorreo").value         = "";
+
+        overlay.classList.add("visible");
+
+        try {
+            // GET /crud/usuario/{id} → devuelve el usuario como JSON
+            const res  = await fetch(`/crud/usuario/${id}`);
+
+            if (!res.ok) throw new Error("No encontrado");
+
+            const user = await res.json();
+
+            // Pre-llena el formulario con los datos actuales
+            document.getElementById("editPrimerNombre").value   = user.primerNombre   || "";
+            document.getElementById("editPrimerApellido").value = user.primerApellido || "";
+            document.getElementById("editDocumento").value      = user.documento      || "";
+            document.getElementById("editCorreo").value         = user.correo         || "";
+
+            // Re-aplica i18n para que los placeholders del modal estén traducidos
+            I18n.applyTranslations();
+
+        } catch (e) {
+            cerrarModal();
+            mostrarToast(translations[I18n.getLang()]["modal.editar.error"], "error");
+        }
+    }
+
+    // ── Cierra el modal ──
+    function cerrarModal() {
+        document.getElementById("modalOverlay").classList.remove("visible");
+    }
+
+    // Cierra el modal si se hace clic fuera del contenido
+    document.getElementById("modalOverlay").addEventListener("click", function (e) {
+        if (e.target === this) cerrarModal();
+    });
+
+    // ── Envía los cambios al servidor con PUT ──
+    async function guardarCambios() {
+        const id      = document.getElementById("editId").value;
+        const lang    = I18n.getLang();
+        const dict    = translations[lang];
+        const btnGuardar = document.getElementById("btnGuardar");
+
+        const primerNombre   = document.getElementById("editPrimerNombre").value.trim();
+        const primerApellido = document.getElementById("editPrimerApellido").value.trim();
+        const documentoStr   = document.getElementById("editDocumento").value.trim();
+        const correo         = document.getElementById("editCorreo").value.trim();
+
+        // VALIDACIÓN: evita enviar campos vacíos que causarían errores NOT NULL en la BD
+        if (!primerNombre || !primerApellido || !documentoStr || !correo) {
+            mostrarToast(dict["modal.editar.error"], "error");
+            return;
+        }
+
+        // Deshabilita el botón para evitar doble envío
+        btnGuardar.disabled    = true;
+        btnGuardar.textContent = dict["modal.editar.cargando"];
+
+        // IMPORTANTE: documento va como número (long en Java)
+        const body = {
+            primerNombre:   primerNombre,
+            primerApellido: primerApellido,
+            documento:      Number(documentoStr),
+            correo:         correo
+        };
+
+        try {
+            const res = await fetch(`/crud/actualizar/${id}`, {
+                method:  "PUT",
+                headers: {
+                    "Content-Type":    "application/json",
+                    "Accept-Language": lang
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                cerrarModal();
+                mostrarToast(dict["modal.editar.exito"], "success");
+                // Recarga la tabla para reflejar los cambios (Thymeleaf es server-side)
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                const texto = await res.text();
+                console.error("[guardarCambios] Error del servidor:", res.status, texto);
+                mostrarToast(dict["modal.editar.error"], "error");
+            }
+
+        } catch (e) {
+            console.error("[guardarCambios] Error de red:", e);
+            mostrarToast(dict["modal.editar.error"], "error");
+        } finally {
+            btnGuardar.disabled    = false;
+            btnGuardar.textContent = dict["modal.editar.botonGuardar"];
+        }
+    }
+
+    // ── Muestra el toast y lo oculta a los 3 segundos ──
+    function mostrarToast(mensaje, tipo) {
+        const toast = document.getElementById("toast");
+        toast.textContent = mensaje;
+        toast.className   = `toast ${tipo}`;
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 3000);
+    }
+
+</script>
 
 </body>
 </html>
