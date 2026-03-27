@@ -12,6 +12,7 @@ public class Usuario {
     private Long celular;
     private String correo;
     private String contrasena;
+    private String rol;
 
     public Usuario(Long celular, String contrasena, String correo, Long documento, Long idUsuario, String primerApellido, String primerNombre, String segundoApellido, String segundoNombre, String tipoDocumento) {
         this.celular = celular;
@@ -107,5 +108,13 @@ public class Usuario {
 
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }

@@ -241,4 +241,42 @@ public class PersistenceUsuario {
 
         return false;
     }
+
+    // ══════════════════════════════════════════════════════════════
+    //  BUSCAR POR TIPO_DOCUMENTO + DOCUMENTO (para autenticación)
+    // ══════════════════════════════════════════════════════════════
+    public static Usuario getUsuarioByTipoYDocumento(String tipoDocumento, long documento) {
+
+        String sql = "SELECT * FROM usuario WHERE tipo_documento = ? AND documento = ?";
+
+        Connection conn = Conexion.getConnection();
+        if (conn == null) {
+            logger.error("[PersistenceUsuario.getUsuarioByTipoYDocumento] No se pudo obtener conexión a la BD.");
+            return null;
+        }
+
+        try (conn; PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tipoDocumento);
+            ps.setLong(2, documento);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getLong("id_usuario"));
+                    u.setTipoDocumento(rs.getString("tipo_documento"));
+                    u.setDocumento(rs.getLong("documento"));
+                    u.setCorreo(rs.getString("correo_electronico"));
+                    u.setContrasena(rs.getString("contrasena"));
+                    u.setRol(rs.getString("rol"));
+                    return u;
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.error("[PersistenceUsuario.getUsuarioByTipoYDocumento] Error SQL: {}", e.getMessage(), e);
+        }
+
+        return null;
+    }
 }

@@ -21,6 +21,11 @@ public class ControllerAdmin {
         return "Registro";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     // ✅ CREAR USUARIO CON RESPUESTA HTTP + HEADER
     @PostMapping("/guardarUsuario")
     @ResponseBody
