@@ -13,7 +13,9 @@ import java.util.List;
 
 public class PersistenceUsuario {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistenceUsuario.class);
+    private static final Logger logger      = LoggerFactory.getLogger(PersistenceUsuario.class);
+    // Logger dedicado a auditoría → escribe en logs/db-audit.log (ver logback-spring.xml)
+    private static final Logger auditLogger = LoggerFactory.getLogger("DB_AUDIT");
 
     // ══════════════════════════════════════════════════════════════
     //  GUARDAR
@@ -45,7 +47,14 @@ public class PersistenceUsuario {
             ps.setString(8, usuario.getCorreo());
             ps.setString(9, usuario.getContrasena());
 
-            return ps.executeUpdate() > 0;
+            boolean guardado = ps.executeUpdate() > 0;
+
+            if (guardado) {
+                auditLogger.info("INSERT | tabla=usuario | correo={} | documento={} | rol=ADMIN",
+                        usuario.getCorreo(), usuario.getDocumento());
+            }
+
+            return guardado;
 
         } catch (SQLException e) {
             logger.error("[PersistenceUsuario.save] Error SQL: {}", e.getMessage(), e);
@@ -187,6 +196,11 @@ public class PersistenceUsuario {
             int filasAfectadas = ps.executeUpdate();
             logger.info("[PersistenceUsuario.update] id={} | filas afectadas={}", usuario.getIdUsuario(), filasAfectadas);
 
+            if (filasAfectadas > 0) {
+                auditLogger.info("UPDATE | tabla=usuario | id={} | correo={} | documento={}",
+                        usuario.getIdUsuario(), usuario.getCorreo(), usuario.getDocumento());
+            }
+
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
@@ -214,6 +228,11 @@ public class PersistenceUsuario {
             ps.setLong(1, id);
 
             int filasAfectadas = ps.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                auditLogger.info("DELETE | tabla=usuario | id={}", id);
+            }
+
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
