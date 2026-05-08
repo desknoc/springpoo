@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Usuarios</title>
+</head>
+<body>
+<center>
+  <h1>Lista de Usuarios</h1>
+
+  <table border="1">
+
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Documento</th>
+      <th>Correo</th>
+      <th>Acción</th>
+    </tr>
+
+      <tr th:each="u : ${usuarios}">
+
+        <td th:text="${u.idUsuario}"></td>
+        <td th:text="${u.primerNombre}"></td>
+        <td th:text="${u.primerApellido}"></td>
+        <td th:text="${u.documento}"></td>
+        <td th:text="${u.correo}"></td>
+
+        <td>
+          <a th:href="@{/eliminarUsuario(id=${u.idUsuario})}">
+            Eliminar
+          </a>
+        </td>
+
+      </tr>
+
+    </table>
+  </center>
+</body>
+</html>
