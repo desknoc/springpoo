@@ -1,6 +1,7 @@
 package com.sena.springpoo.controller;
 
 import com.sena.springpoo.models.Usuario;
+import com.sena.springpoo.models.UsuarioSesion;
 import com.sena.springpoo.persistence.PersistenceUsuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,23 @@ public class CrudController {
         }
 
         model.addAttribute("usuarios", usuarios);
+
+        // ══════════════════════════════════════════════════════════════
+        //  NUEVO: Cargar usuarios con sesión activa (INNER JOIN).
+        //
+        //  ¿Qué hace?
+        //  Ejecuta un INNER JOIN entre las tablas "usuario" y "sesion"
+        //  para obtener SOLO los usuarios que tienen al menos un registro
+        //  de inicio de sesión. El resultado se inyecta al modelo de
+        //  Thymeleaf como "usuariosSesion" para renderizar la tabla
+        //  en crud.html.
+        //
+        //  Si la consulta falla, la lista será null y Thymeleaf mostrará
+        //  el mensaje "No hay usuarios con sesión activa" en vez de la tabla.
+        // ══════════════════════════════════════════════════════════════
+        List<UsuarioSesion> sesiones = PersistenceUsuario.getUsuariosConSesion();
+        model.addAttribute("usuariosSesion", sesiones);
+
         return "crud";
     }
 

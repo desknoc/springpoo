@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-i18n-title="login.pestania">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión — SENA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Selector de idioma ── */
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 2px solid #4CAF50;
+            background-color: transparent;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .login-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 24px;
+        }
+
+        /* Logo / encabezado */
+        .brand {
+            text-align: center;
+        }
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: #4CAF50;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(76,175,80,0.35);
+        }
+        .brand-badge svg { width: 32px; height: 32px; fill: #fff; }
+        .brand h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; }
+        .brand p  { font-size: 0.875rem; color: #6b7280; margin-top: 4px; }
+
+        /* Tarjeta principal */
+        .card {
+            width: 100%;
+            background: #2d2d2d;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #f9fafb;
+            margin-bottom: 24px;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        /* Campos del formulario */
+        .field { margin-bottom: 18px; }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        select, input[type="number"], input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: #3d3d3d;
+            border: 1.5px solid #4b4b4b;
+            border-radius: 10px;
+            color: #f9fafb;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        select option { background: #2d2d2d; }
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76,175,80,0.18);
+        }
+        /* Quitar flechas del input number */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+        /* Botón */
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+            background: #4CAF50;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.97rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(76,175,80,0.4);
+        }
+        .btn-login:hover  { background: #43a047; box-shadow: 0 6px 20px rgba(76,175,80,0.5); }
+        .btn-login:active { transform: scale(0.98); }
+
+        /* Alertas */
+        .alert {
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alert-error   { background: #3b1f1f; color: #fca5a5; border: 1px solid #7f1d1d; }
+        .alert-success { background: #1a2e1a; color: #86efac; border: 1px solid #14532d; }
+
+        .divider {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #3d3d3d;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Selector de idioma -->
+<div class="lang-selector">
+    <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
+    <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
+</div>
+
+<div class="login-wrapper">
+
+    <!-- Encabezado de marca -->
+    <div class="brand">
+        <div class="brand-badge">
+            <!-- Icono escudo SVG -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+            </svg>
+        </div>
+        <h1 data-i18n="login.panel.titulo">Panel SENA</h1>
+        <p data-i18n="login.panel.subtitulo">Sistema de Gestión de Aprendices</p>
+    </div>
+
+    <!-- Tarjeta de login -->
+    <div class="card">
+        <h2 data-i18n="login.tarjeta.titulo">Iniciar Sesión</h2>
+
+        <!-- Mensaje de error de credenciales -->
+        <div class="alert alert-error" th:if="${param.error}" style="margin-bottom:18px;">
+            <span>⚠</span>
+            <span data-i18n="login.alerta.error">Tipo de documento, documento o contraseña incorrectos.</span>
+        </div>
+
+        <!-- Mensaje de sesión cerrada -->
+        <div class="alert alert-success" th:if="${param.logout}" style="margin-bottom:18px;">
+            <span>✓</span>
+            <span data-i18n="login.alerta.logout">Sesión cerrada correctamente.</span>
+        </div>
+
+        <!--
+          th:action="@{/login}" genera la URL con el context-path correcto
+          y agrega automáticamente el token CSRF de Spring Security
+        -->
+        <form th:action="@{/login}" method="post" id="loginForm">
+
+            <div class="field">
+                <label for="tipo_documento_ui" data-i18n="login.label.tipoDoc">Tipo de documento</label>
+                <select id="tipo_documento_ui">
+                    <option value="" data-i18n="login.opcion.selecciona">-- Selecciona --</option>
+                    <option value="CC" data-i18n="login.opcion.cc">CC — Cédula de Ciudadanía</option>
+                    <option value="TI" data-i18n="login.opcion.ti">TI — Tarjeta de Identidad</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="numero_documento_ui" data-i18n="login.label.documento">Número de documento</label>
+                <input id="numero_documento_ui"
+                       type="number"
+                       data-i18n-placeholder="login.placeholder.documento"
+                       placeholder="Ej: 12345678901"
+                       required />
+            </div>
+
+            <div class="field">
+                <label for="contrasena" data-i18n="login.label.contrasena">Contraseña</label>
+                <!--
+                  name="contrasena" coincide con passwordParameter("contrasena")
+                  configurado en SecurityConfig.java
+                -->
+                <input id="contrasena"
+                       type="password"
+                       name="contrasena"
+                       data-i18n-placeholder="login.placeholder.contrasena"
+                       placeholder="••••••••"
+                       required />
+            </div>
+
+            <!--
+              Campo oculto: Spring Security leerá "documento" como el username.
+              El JS lo llena con "TIPO#numero" justo antes del submit.
+              Ejemplo: "CC#12345678901"
+            -->
+            <input type="hidden" id="documento" name="documento" />
+
+            <button type="submit" class="btn-login" data-i18n="login.boton">Ingresar al sistema</button>
+
+        </form>
+
+        <div class="divider" data-i18n="login.footer">SENA &mdash; Servicio Nacional de Aprendizaje</div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/translations.js}"></script>
+<script th:src="@{/js/i18n.js}"></script>
+
+<script>
+    // Antes de enviar el formulario, combina tipo_documento + '#' + numero
+    // en el campo oculto 'documento' (que Spring Security usa como username).
+    // Ejemplo resultado: "CC#12345678901"
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        var tipo   = document.getElementById('tipo_documento_ui').value;
+        var numero = document.getElementById('numero_documento_ui').value;
+
+        if (!tipo || !numero) {
+            e.preventDefault();
+            alert('Por favor selecciona el tipo de documento y escribe el número.');
+            return;
+        }
+
+        document.getElementById('documento').value = tipo + '#' + numero;
+    });
+</script>
+
+</body>
+</html>

@@ -70,6 +70,24 @@ public class CustomAuthProvider implements AuthenticationProvider {
         logger.info("[CustomAuthProvider] Login exitoso: tipo={} doc={} rol={}",
                 tipoDocumento, documento, usuario.getRol());
 
+        // ══════════════════════════════════════════════════════════════
+        //  NUEVO: Registrar el inicio de sesión en la tabla "sesion".
+        //
+        //  ¿Qué hace?
+        //  Ejecuta un INSERT INTO sesion(...) con los datos del usuario
+        //  que acaba de autenticarse exitosamente. Esto permite rastrear
+        //  quién ha iniciado sesión y cuándo.
+        //
+        //  ¿Qué pasa si falla el INSERT?
+        //  Solo se registra un WARNING en el log. NO bloqueamos el login
+        //  del usuario porque el registro de sesión es informativo,
+        //  no crítico para la autenticación.
+        // ══════════════════════════════════════════════════════════════
+        boolean sesionRegistrada = PersistenceUsuario.registrarSesion(usuario);
+        if (!sesionRegistrada) {
+            logger.warn("[CustomAuthProvider] No se pudo registrar la sesión en la BD para doc={}", documento);
+        }
+
         // Construir el token autenticado con el rol del usuario (ROLE_ es prefijo obligatorio de Spring Security)
         List<SimpleGrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol()));

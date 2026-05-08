@@ -1,6 +1,7 @@
 package com.sena.springpoo.persistence;
 
 import com.sena.springpoo.models.Usuario;
+import com.sena.springpoo.models.UsuarioSesion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -282,5 +283,163 @@ public class PersistenceUsuario {
         }
 
         return null;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  REGISTRAR SESIÓN (INSERT en tabla sesion al hacer login)
+    // ══════════════════════════════════════════════════════════════
+    /**
+     * Inserta un registro en la tabla "sesion" cuando un usuario inicia sesión.
+     *
+     * ¿Cuándo se llama?
+     * ─────────────────
+     * Desde CustomAuthProvider.authenticate(), justo DESPUÉS de verificar
+     * que las credenciales son correctas (BCrypt matches) y ANTES de
+     * devolver el token autenticado a Spring Security.
+     *
+     * ¿Qué datos inserta?
+     * ────────────────────
+     * - tipo_documento:      El tipo de documento del usuario (CC, TI)
+     * - documento:           El número de documento
+     * - contrasena:          El hash BCrypt almacenado en la BD (NO la contraseña plana)
+     * - fecha_registro:      NOW() → la fecha/hora exacta del login
+     * - ultima_actualizacion: NOW() → igual que fecha_registro al momento de insertar
+     * - usuario_id_usuario:  La FK que apunta al id_usuario en la tabla usuario
+     *
+     * ¿Por qué se usa PreparedStatement?
+     * ──────────────────────────────────
+     * Para prevenir ataques de SQL Injection. Los valores del usuario
+     * se pasan como parámetros (?) y nunca se concatenan en el String SQL.
+     *
+     * @param usuario El objeto Usuario con los datos del usuario autenticado
+     * @return true si el INSERT fue exitoso, false si falló
+     */
+    public static boolean registrarSesion(Usuario usuario) {
+
+        // Sentencia SQL para insertar en la tabla sesion.
+        // NOW() genera la fecha/hora actual del servidor MariaDB.
+        String sql = "INSERT INTO sesion " +
+                "(tipo_documento, documento, contrasena, fecha_registro, " +
+                "ultima_actualizacion, usuario_id_usuario) " +
+                "VALUES (?, ?, ?, NOW(), NOW(), ?)";
+
+        // Obtener conexión a la BD mediante la clase Conexion
+        Connection conn = Conexion.getConnection();
+        if (conn == null) {
+            logger.error("[PersistenceUsuario.registrarSesion] No se pudo obtener conexión a la BD.");
+            return false;
+        }
+
+        // try-with-resources: cierra automáticamente conn y ps al salir del bloque
+        try (conn; PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Mapeo de parámetros: cada ? corresponde a un índice secuencial
+            ps.setString(1, usuario.getTipoDocumento());  // ? #1 → tipo_documento
+            ps.setLong(2,   usuario.getDocumento());      // ? #2 → documento
+            ps.setString(3, usuario.getContrasena());     // ? #3 → contrasena (hash BCrypt)
+            ps.setLong(4,   usuario.getIdUsuario());      // ? #4 → usuario_id_usuario (FK)
+
+            boolean registrado = ps.executeUpdate() > 0;
+
+            // Auditoría: registrar en el log especializado de auditoría
+            if (registrado) {
+                auditLogger.info("INSERT | tabla=sesion | usuario_id={} | documento={}",
+                        usuario.getIdUsuario(), usuario.getDocumento());
+            }
+
+            return registrado;
+
+        } catch (SQLException e) {
+            logger.error("[PersistenceUsuario.registrarSesion] Error SQL: {}", e.getMessage(), e);
+        }
+
+        return false;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  LISTAR USUARIOS CON SESIÓN ACTIVA (INNER JOIN)
+    // ══════════════════════════════════════════════════════════════
+    /**
+     * Consulta que une las tablas "usuario" y "sesion" mediante INNER JOIN.
+     *
+     * ¿Qué es un INNER JOIN?
+     * ──────────────────────
+     * Es un tipo de JOIN que devuelve SOLO las filas donde existe una
+     * coincidencia en AMBAS tablas. En este caso:
+     *   - Si un usuario tiene 3 sesiones → aparece 3 veces en el resultado
+     *   - Si un usuario tiene 0 sesiones → NO aparece (se excluye)
+     *
+     * ¿Por qué INNER JOIN y no LEFT JOIN?
+     * ────────────────────────────────────
+     * Porque el requerimiento es mostrar ÚNICAMENTE los usuarios que
+     * SÍ tienen sesión activa. Con LEFT JOIN aparecerían TODOS los
+     * usuarios (incluso los que nunca han iniciado sesión) con valores
+     * NULL en las columnas de sesion.
+     *
+     * La cláusula de unión: ON u.id_usuario = s.usuario_id_usuario
+     * ─────────────────────────────────────────────────────────────
+     * Conecta cada registro de sesion con su usuario correspondiente
+     * a través de la Foreign Key (FK) usuario_id_usuario.
+     *
+     * ORDER BY s.fecha_registro DESC
+     * ──────────────────────────────
+     * Ordena los resultados por fecha de sesión más reciente primero,
+     * para que el administrador vea los logins más recientes arriba.
+     *
+     * @return Lista de UsuarioSesion con los datos del JOIN, o null si falla la conexión
+     */
+    public static List<UsuarioSesion> getUsuariosConSesion() {
+
+        List<UsuarioSesion> lista = new ArrayList<>();
+
+        // Consulta SQL con INNER JOIN entre usuario (alias "u") y sesion (alias "s")
+        String sql = "SELECT u.id_usuario, " +
+                "       u.primer_nombre, " +
+                "       u.primer_apellido, " +
+                "       u.tipo_documento, " +
+                "       u.documento, " +
+                "       u.correo_electronico, " +
+                "       s.id_sesion, " +
+                "       s.fecha_registro    AS fecha_sesion, " +
+                "       s.ultima_actualizacion AS ultima_actualizacion_sesion " +
+                "FROM   usuario u " +
+                "       INNER JOIN sesion s ON u.id_usuario = s.usuario_id_usuario " +
+                "ORDER BY s.fecha_registro DESC";
+
+        Connection conn = Conexion.getConnection();
+        if (conn == null) {
+            logger.error("[PersistenceUsuario.getUsuariosConSesion] No se pudo obtener conexión a la BD.");
+            return null;
+        }
+
+        try (conn; PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            // Recorrer cada fila del ResultSet y mapear manualmente
+            // las columnas del JOIN al POJO UsuarioSesion
+            while (rs.next()) {
+                UsuarioSesion us = new UsuarioSesion();
+
+                // Columnas de la tabla usuario (prefijo "u." en el SQL)
+                us.setIdUsuario(rs.getLong("id_usuario"));
+                us.setPrimerNombre(rs.getString("primer_nombre"));
+                us.setPrimerApellido(rs.getString("primer_apellido"));
+                us.setTipoDocumento(rs.getString("tipo_documento"));
+                us.setDocumento(rs.getLong("documento"));
+                us.setCorreo(rs.getString("correo_electronico"));
+
+                // Columnas de la tabla sesion (alias definidos en el SQL)
+                us.setIdSesion(rs.getLong("id_sesion"));
+                us.setFechaSesion(rs.getString("fecha_sesion"));
+                us.setUltimaActualizacionSesion(rs.getString("ultima_actualizacion_sesion"));
+
+                lista.add(us);
+            }
+
+        } catch (SQLException e) {
+            logger.error("[PersistenceUsuario.getUsuariosConSesion] Error SQL: {}", e.getMessage(), e);
+        }
+
+        return lista;
     }
 }
