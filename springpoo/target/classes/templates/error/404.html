@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-i18n-title="error.404.titulo">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Página no encontrada</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container { max-width: 500px; }
+
+        img {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 50px;
+            margin: 10px 0;
+        }
+
+        p {
+            font-size: 18px;
+            color: #8b949e;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #238636;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        a:hover { background-color: #2ea043; }
+
+        /* ── Selector de idioma ── */
+        .lang-selector {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 2px solid #238636;
+            background-color: #0d1117;
+            color: #238636;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #238636;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Selector de idioma -->
+<div class="lang-selector">
+    <button class="lang-btn" data-lang="es" onclick="I18n.setLang('es')">🇨🇴 ES</button>
+    <button class="lang-btn" data-lang="en" onclick="I18n.setLang('en')">🇺🇸 EN</button>
+</div>
+
+<div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="Error 404">
+    <h1>404</h1>
+    <p data-i18n="error.404.mensaje">Oops... la página que buscas no existe.</p>
+    <a href="/" data-i18n="error.404.volver">Volver al inicio</a>
+</div>
+
+<!-- ✅ Scripts al final del body -->
+<script th:src="@{/js/translations.js}"></script>
+<script th:src="@{/js/i18n.js}"></script>
+
+</body>
+</html>
