@@ -2,3 +2,9 @@
 2026-05-08 09:22:48 | INFO   | INSERT | tabla=sesion | usuario_id=6 | documento=1021807502
 2026-05-08 09:26:34 | INFO   | INSERT | tabla=sesion | usuario_id=6 | documento=1021807502
 2026-05-08 09:27:18 | INFO   | UPDATE | tabla=usuario | id=6 | correo=hola@gmail.com | documento=1021807502
+2026-05-21 21:59:06 | INFO   | INSERT | tabla=usuario | correo=hola@gmail.com | documento=12345678 | rol=ADMIN
+2026-05-21 21:59:25 | INFO   | INSERT | tabla=sesion | usuario_id=6 | documento=12345678
+2026-05-21 22:00:22 | INFO   | UPDATE | tabla=usuario | id=6 | correo=hola@gmail.com | documento=12345678
+2026-05-21 22:01:36 | INFO   | INSERT | tabla=sesion | usuario_id=6 | documento=12345678
+2026-05-21 22:01:52 | INFO   | UPDATE | tabla=usuario | id=6 | correo=hola@gmail.com | documento=12345678
+2026-05-21 22:02:57 | INFO   | UPDATE | tabla=usuario | id=6 | correo=hola@gmail.com | documento=12345678

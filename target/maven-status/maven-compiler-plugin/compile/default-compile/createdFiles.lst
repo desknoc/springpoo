@@ -3,6 +3,7 @@ com\sena\springpoo\models\Comunicados.class
 com\sena\springpoo\persistence\Conexion.class
 com\sena\springpoo\config\GeneradorBCrypt.class
 com\sena\springpoo\models\UsuarioSesion.class
+com\sena\springpoo\service\N8nService.class
 com\sena\springpoo\SpringpooApplication.class
 com\sena\springpoo\config\CustomAuthProvider.class
 com\sena\springpoo\controller\CrudController.class

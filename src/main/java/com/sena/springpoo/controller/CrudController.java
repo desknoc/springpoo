@@ -3,6 +3,7 @@ package com.sena.springpoo.controller;
 import com.sena.springpoo.models.Usuario;
 import com.sena.springpoo.models.UsuarioSesion;
 import com.sena.springpoo.persistence.PersistenceUsuario;
+import com.sena.springpoo.service.N8nService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,11 @@ import java.util.List;
 public class CrudController {
 
     private static final Logger logger = LoggerFactory.getLogger(CrudController.class);
+    private final N8nService n8nService;
+
+    public CrudController(N8nService n8nService) {
+        this.n8nService = n8nService;
+    }
 
 
     @GetMapping
@@ -68,6 +74,10 @@ public class CrudController {
             logger.error("[CrudController.crearUsuario] Error al insertar el usuario en la BD.");
             return "error/500";
         }
+        
+        // Notificar a n8n
+        n8nService.notificarCambioAsync("CREATE", usuario);
+        
         return "redirect:/crud";
     }
 
@@ -119,6 +129,9 @@ public class CrudController {
 
         if (!actualizado) {
             logger.error("[CrudController.actualizarUsuario] Fallo al actualizar el usuario con ID {}.", id);
+        } else {
+            // Notificar a n8n
+            n8nService.notificarCambioAsync("UPDATE", usuario);
         }
 
         String mensaje = idioma.contains("es")
@@ -137,10 +150,14 @@ public class CrudController {
             @PathVariable long id,
             @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
     ) {
+        Usuario usuario = PersistenceUsuario.getUsuarioById(id);
         boolean eliminado = PersistenceUsuario.delete(id);
 
         if (eliminado) {
             logger.info("[CrudController.eliminarUsuario] Usuario con ID {} eliminado correctamente.", id);
+            if (usuario != null) {
+                n8nService.notificarCambioAsync("DELETE", usuario);
+            }
             return ResponseEntity.ok(
                     idioma.contains("es") ? "Usuario eliminado" : "User deleted"
             );
@@ -155,10 +172,14 @@ public class CrudController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarVista(@PathVariable long id) {
+        Usuario usuario = PersistenceUsuario.getUsuarioById(id);
         boolean eliminado = PersistenceUsuario.delete(id);
         if (!eliminado) {
             logger.error("[CrudController.eliminarVista] No se pudo eliminar el usuario con ID {} desde la vista.", id);
             return "error/500";
+        }
+        if (usuario != null) {
+            n8nService.notificarCambioAsync("DELETE", usuario);
         }
         return "redirect:/crud";
     }
