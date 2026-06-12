@@ -58,6 +58,7 @@ public class CrudController {
         List<UsuarioSesion> sesiones = PersistenceUsuario.getUsuariosConSesion();
         model.addAttribute("usuariosSesion", sesiones);
 
+        logger.info("[CrudController.listar] Listado cargado correctamente. {} usuarios encontrados.", usuarios.size());
         return "crud";
     }
 
@@ -77,7 +78,8 @@ public class CrudController {
         
         // Notificar a n8n
         n8nService.notificarCambioAsync("CREATE", usuario);
-        
+
+        logger.info("[CrudController.crearUsuario] Usuario '{}' creado correctamente.", usuario.getCorreo());
         return "redirect:/crud";
     }
 
@@ -95,6 +97,7 @@ public class CrudController {
             return ResponseEntity.notFound().build(); // 404
         }
 
+        logger.info("[CrudController.obtenerUsuario] Usuario ID {} encontrado.", id);
         return ResponseEntity.ok(usuario); // 200 + JSON
     }
 
@@ -181,6 +184,7 @@ public class CrudController {
         if (usuario != null) {
             n8nService.notificarCambioAsync("DELETE", usuario);
         }
+        logger.info("[CrudController.eliminarVista] Usuario ID {} eliminado correctamente desde la vista.", id);
         return "redirect:/crud";
     }
 
@@ -194,6 +198,7 @@ public class CrudController {
             return "error/500";
         }
 
+        logger.info("[CrudController.buscarUsuario] Usuario ID {} encontrado.", id);
         model.addAttribute("usuarioEncontrado", usuario);
         model.addAttribute("usuarios", PersistenceUsuario.getUsuarios());
 

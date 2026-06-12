@@ -11,14 +11,15 @@
     </appender>
 
     <!-- ══════════════════════════════════════════════════════════════ -->
-    <!--  ARCHIVO 1: errors.log — Solo errores del sistema             -->
+    <!--  ARCHIVO 1: errors.log — WARN+ del sistema (errores y        -->
+    <!--  advertencias: problemas de BD, usuarios no encontrados, etc) -->
     <!-- ══════════════════════════════════════════════════════════════ -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/errors.log</file>
 
-        <!-- Solo escribe mensajes de nivel ERROR o superior -->
+        <!-- Captura WARN y ERROR (todo lo que sea problemático) -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
+            <level>WARN</level>
         </filter>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -61,7 +62,7 @@
 
     <!-- ══════════════════════════════════════════════════════════════ -->
     <!--  LOGGER RAÍZ                                                  -->
-    <!--  INFO en consola, ERROR en archivo errors.log                 -->
+    <!--  INFO en consola, WARN+ en archivo errors.log                 -->
     <!-- ══════════════════════════════════════════════════════════════ -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

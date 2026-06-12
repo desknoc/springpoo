@@ -71,10 +71,6 @@ public class UsuarioSesion {
         this.ultimaActualizacionSesion = ultimaActualizacionSesion;
     }
 
-    // ═══════════════════════════════════════════════════
-    //  GETTERS Y SETTERS
-    // ═══════════════════════════════════════════════════
-
     public Long getIdUsuario() {
         return idUsuario;
     }

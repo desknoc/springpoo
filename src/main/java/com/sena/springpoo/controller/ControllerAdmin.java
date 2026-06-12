@@ -66,46 +66,4 @@ public class ControllerAdmin {
             return "error/500";
         }
     }
-
-
-    @DeleteMapping("/eliminarUsuario/{id}")
-    @ResponseBody
-    public ResponseEntity<String> eliminarUsuario(
-            @PathVariable long id,
-            @RequestHeader(value = "Accept-Language", defaultValue = "es") String idioma
-    ){
-
-        boolean eliminado = PersistenceUsuario.delete(id);
-
-        String mensaje;
-
-        if(idioma.contains("es")){
-            mensaje = eliminado ? "Usuario eliminado" : "Usuario no encontrado";
-        } else {
-            mensaje = eliminado ? "User deleted" : "User not found";
-        }
-
-        if(eliminado){
-            logger.info("[ControllerAdmin.eliminarUsuario] Usuario con ID '{}' eliminado correctamente.", id);
-            return new ResponseEntity<>(mensaje, HttpStatus.OK); // 200
-        } else {
-            logger.warn("[ControllerAdmin.eliminarUsuario] No se encontró el usuario con ID '{}' para eliminar.", id);
-            return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND); // 404
-        }
-    }
-
-
-    @GetMapping("/usuariosAPI")
-    @ResponseBody
-    public ResponseEntity<List<Usuario>> verUsuarios(){
-
-        List<Usuario> usuarios = PersistenceUsuario.getUsuarios();
-
-        if(usuarios == null || usuarios.isEmpty()){
-            logger.warn("[ControllerAdmin.verUsuarios] No hay usuarios registrados o no se pudo conectar a la BD.");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-        }
-
-        return new ResponseEntity<>(usuarios, HttpStatus.OK); // 200
-    }
 }
